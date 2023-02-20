@@ -5,4 +5,7 @@
  * @Description: 文件描述
  */
 module.exports = {
+  devServer: {
+    port: 9000
+  },
 };

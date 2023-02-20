@@ -1,0 +1,13 @@
+@import "../../assets/sass/mixin";
+
+.authenticated-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  .greeting-title { margin-bottom: 50px; width: 100%; font-size: 64px; text-align: center;}
+  .form-style { @include form-width;}
+  .toggle-text { margin-top: 10px; @include form-width;}
+}
