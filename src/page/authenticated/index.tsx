@@ -4,21 +4,14 @@
  * @Company: orientsec.com.cn
  * @Description: 文件描述
  */
-import {
-  Route,
-  Routes,
-  BrowserRouter as Router,
-} from "react-router-dom";
-import {ArticleList} from "../articleList";
-import {store} from "../../store";
-import {Provider} from "react-redux";
-import React from "react";
+import { Route, Routes } from 'react-router-dom'
+import { ArticleList } from '../articleList'
 
 export const Authenticated = () => (
-  <div className='container'>
-    <Routes>
-      <Route path='/articles' element={<ArticleList />} />
-      <Route index element={<ArticleList />} />
-    </Routes>
-  </div>
+	<div className='container'>
+		<Routes>
+			<Route path='/articles' element={<ArticleList />} />
+			<Route index element={<ArticleList />} />
+		</Routes>
+	</div>
 )
