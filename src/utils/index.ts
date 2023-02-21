@@ -5,7 +5,7 @@
  * @Description: 文件描述
  */
 import { useMemo } from 'react';
-import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
+import {URLSearchParamsInit, useSearchParams} from "react-router-dom";
 
 export const isError = (value: any): value is Error => value?.message;
 

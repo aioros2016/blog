@@ -5,7 +5,7 @@
  * @Description: 文件描述
  */
 
-const tokenKey = '__BLOG_TOKEN__';
+export const tokenKey = '__BLOG_TOKEN__';
 
 export const formBaseProps = {
   labelCol: { span: 4 },

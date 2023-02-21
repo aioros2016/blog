@@ -4,35 +4,41 @@
  * @Company: orientsec.com.cn
  * @Description: 文件描述
  */
-import {ReactNode, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Form, Input } from 'antd';
-import { formBaseProps } from '../const';
-import { useDispatch } from "react-redux";
-import { message } from "antd";
-import { unAuthenticatedAction } from "../page/unAuthenticated/unAuthenticated.slice";
-import { request } from "../service/base";
-import { RequestError, RequestSuccess, UserInfo } from "../types";
+import {ReactNode, useState} from "react";
+import {Button, Form, Input} from 'antd';
+import {formBaseProps, tokenKey} from '../const';
+import {useDispatch} from "react-redux";
+import {message} from "antd";
+import {unAuthenticatedAction} from "../page/unAuthenticated/unAuthenticated.slice";
+import {request} from "../service/base";
+import {RequestError, RequestSuccess, UserInfo} from "../types";
+import {useNavigate} from "react-router-dom";
 
 interface LoginParams {
   email: string;
   password: string;
 }
 
-export const Login = ({ children }: { children: ReactNode }) => {
-  const dispatch = useDispatch();
+export const Login = ({children}: { children: ReactNode }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
+  /**
+   * 提交登录
+   * @param values 提交数据
+   */
   const onFinish = async (values: LoginParams) => {
     try {
-      const { result } = await request<LoginParams, RequestSuccess<UserInfo>>({
+      setLoading(true);
+      const {result} = await request<LoginParams, RequestSuccess<UserInfo>>({
         url: 'user/login',
         method: 'POST',
         data: values
       });
-      localStorage.setItem('__BLOG_TOKEN__', result?.token || '');
+      localStorage.setItem(tokenKey, result?.token || '');
+      navigate('/articles', {replace: true});
       dispatch(unAuthenticatedAction.login(result));
-      navigate("/articles");
     } catch (e) {
       console.log(e)
       const error = e as RequestError
@@ -40,6 +46,8 @@ export const Login = ({ children }: { children: ReactNode }) => {
         return message.error(error?.error[0].msg || '其他错误，请稍候重试');
       }
       message.error(error?.error || '其他错误，请稍候重试');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +61,7 @@ export const Login = ({ children }: { children: ReactNode }) => {
       <Form
         name="login"
         {...formBaseProps}
-        initialValues={{ remember: true }}
+        initialValues={{remember: true}}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
@@ -61,26 +69,36 @@ export const Login = ({ children }: { children: ReactNode }) => {
         className="form-style"
       >
         <Form.Item
-          label="用户名"
+          label="邮箱"
           name="email"
-          rules={[{ required: true, message: '请输入邮箱' }]}
+          rules={[
+            {required: true, message: '请输入邮箱'},
+            {
+              pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              message: '邮箱格式不正确'
+            }
+          ]}
         >
-          <Input placeholder='请输入您的邮箱' allowClear />
+          <Input placeholder='请输入您的邮箱' allowClear/>
         </Form.Item>
 
         <Form.Item
           label="密码"
           name="password"
-          rules={[{ required: true, message: '请输入密码' }]}
+          rules={[
+            {required: true, message: '请输入密码'},
+            // { pattern: /^\S*(?=\S{8,16})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '长度8-16位，必须包含大小写字母和数字的组合' }
+          ]}
         >
-          <Input.Password placeholder='请输入您的密码' allowClear />
+          <Input.Password placeholder='请输入您的密码' allowClear/>
         </Form.Item>
 
-        <Form.Item style={{marginTop: '40px'}} wrapperCol={{ offset: formBaseProps.labelCol.span, span: formBaseProps.wrapperCol.span }}>
-          <Button style={{marginRight: '20px'}} type="primary" htmlType="submit">
+        <Form.Item style={{marginTop: '40px'}}
+                   wrapperCol={{offset: formBaseProps.labelCol.span, span: formBaseProps.wrapperCol.span}}>
+          <Button loading={loading} style={{marginRight: '20px'}} type="primary" htmlType="submit">
             登录
           </Button>
-          <Button htmlType="button">
+          <Button htmlType="button" onClick={() => navigate('/articles', {replace: true})}>
             跳过
           </Button>
         </Form.Item>

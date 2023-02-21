@@ -31,7 +31,6 @@ export const unAuthenticatedSlice = createSlice({
       state.userInfo = null;
     },
     userInfo(state, {payload}) {
-      console.log(payload)
       state.userInfo = payload;
     }
   }
