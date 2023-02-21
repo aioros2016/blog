@@ -19,7 +19,7 @@ interface TipProps {
 
 const Tip = ({route = '/', replace = true}: TipProps) => {
   const location = useLocation();
-  const navigate = useNavigatess();
+  const navigate = useNavigate()
   return (
     <Row className="toggle-text">
       <Col span={formBaseProps.labelCol.span}/>
