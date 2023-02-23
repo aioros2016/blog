@@ -27,7 +27,7 @@ const Tip = ({ route = '/', replace = true }: TipProps) => {
 				<Button type='link' className='toggle-text' onClick={() => {
 					navigate(route, { replace })
 				}}>{
-					location.pathname === ('/' || 'login') ? '注册新账号' : '已有账号？直接登录！'
+					location.pathname === '/' || location.pathname === '/login' ? '注册新账号' : '已有账号？直接登录！'
 				}</Button>
 			</Col>
 		</Row>
