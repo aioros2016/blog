@@ -1,8 +1,5 @@
 import React from 'react'
 import { ConfigProvider } from 'antd'
-import {
-	BrowserRouter as Router
-} from 'react-router-dom'
 import 'antd/dist/reset.css'
 import './assets/sass/App.scss'
 import { Provider } from 'react-redux'
@@ -18,11 +15,9 @@ function App() {
 				}
 			}}
 		>
-			<Router>
-				<Provider store={store}>
-					<Home />
-				</Provider>
-			</Router>
+			<Provider store={store}>
+				<Home />
+			</Provider>
 		</ConfigProvider>
 	)
 }

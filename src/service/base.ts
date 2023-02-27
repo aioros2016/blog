@@ -6,7 +6,7 @@
  */
 import axios, { AxiosError } from 'axios'
 import { RequestError, RequestMethods } from '../types'
-import { userToken } from '../const'
+import { tokenKey, userToken } from '../const'
 import { message } from 'antd'
 
 const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.cn/vod/' : 'http://localhost:3000/'
@@ -14,8 +14,9 @@ const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.c
 axios.defaults.baseURL = baseURL
 
 axios.interceptors.request.use(function(config) {
-	if (userToken) {
-		config.headers.Authorization = `Bearer ${userToken}`
+	console.log('userToken:', localStorage.getItem(tokenKey))
+	if (localStorage.getItem(tokenKey)) {
+		config.headers.Authorization = `Bearer ${localStorage.getItem(tokenKey)}`
 	}
 	return config
 }, function(error) {

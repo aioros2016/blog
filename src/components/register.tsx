@@ -2,87 +2,69 @@
  * @Author: lizhigang
  * @Date: 2023-02-16 18:54:38
  * @Company: orientsec.com.cn
- * @Description: 文件描述
+ * @Description: 注册组件
  */
 import { Button, Form, Input, InputNumber } from 'antd'
 import { formBaseProps } from '../const'
-import React, { ReactNode, useState } from 'react'
-import { useStoreFormVals } from '../hooks'
+import React, { ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectRegisterDataState, unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
-import FileUpload from './upload'
+import {
+	selectRegisterDataState,
+	unAuthenticatedAction
+} from '../page/unAuthenticated/unAuthenticated.slice'
+import FileUpload, { onRequest } from './upload'
 import { request, requestError } from '../service/base'
 import { RequestSuccess, UserInfo } from '../types'
-import { useNavigate } from 'react-router-dom'
 
-export const Register = ({ children }: { children: ReactNode }) => {
-	const navigate = useNavigate()
+export const Register = ({ hide = false, children }: { hide?: boolean; children: ReactNode }) => {
 	const dispatch = useDispatch()
 	const submitData = useSelector(selectRegisterDataState)
 	const [form] = Form.useForm()
-	const [formVals, setFormVals] = useState(submitData)
 
-	useStoreFormVals<typeof submitData>(
-		form,
-		formVals,
-		'register',
-		submitData
-	)
-
-	const onRequest = async (imgList: any) => {
-		console.log(imgList)
-		const formData = new FormData()
-		formData.append('avatar', imgList)
-		console.log(formData)
-		try {
-			const { result } = await request<FormData, RequestSuccess<string>>({
-				url: 'user/avatar',
-				method: 'POST',
-				data: formData
-			})
-			return Promise.resolve(result)
-		} catch (error) {
-			console.error(error)
-		}
-	}
+	// useStoreFormVals<typeof submitData>(
+	// 	form,
+	// 	formVals,
+	// 	'register',
+	// 	submitData
+	// )
 
 	const onFinish = async (values: any) => {
-		console.log('Success:', values)
+		console.log(values)
 		try {
-			let avatar = undefined
+			let avatar
 			if (values.avatar?.length) {
 				avatar = await onRequest(values.avatar[0].originFileObj)
 			}
+			console.log(avatar)
 
-			const { result } = await request<typeof submitData, RequestSuccess<UserInfo>>({
+			await request<typeof submitData, RequestSuccess<UserInfo>>({
 				url: 'user/register',
 				method: 'POST',
 				data: {
 					...values,
+					username: values.username.trim(),
+					password: values.password.trim(),
+					email: values.email.trim(),
+					mobile: values.mobile.trim(),
+					channelDes: values.channelDes,
 					avatar
 				}
 			})
-			console.log(result)
 			form.resetFields()
-			dispatch(unAuthenticatedAction.storeSubmitData(['register', null]))
-			navigate('/login')
+			dispatch(unAuthenticatedAction.setLogin(true))
 		} catch (e) {
 			requestError(e)
 		}
 	}
 
 	return (
-		<div className='authenticated-wrapper'>
+		<div className={`authenticated-wrapper ${hide ? 'hide' : ''}`}>
 			<h1 className='greeting-title'>你好</h1>
 			<Form
 				form={form}
 				name='login'
 				{...formBaseProps}
 				onFinish={onFinish}
-				onValuesChange={changedValues => {
-					setFormVals(Object.assign({ ...submitData }, changedValues))
-				}
-				}
 				autoComplete='off'
 				size='large'
 				className='form-style'
@@ -148,7 +130,7 @@ export const Register = ({ children }: { children: ReactNode }) => {
 						}
 					]}
 				>
-					<Input placeholder='请输入您的邮箱' allowClear />
+					<Input placeholder='请输入您的手机号' allowClear />
 				</Form.Item>
 
 				<Form.Item name='avatar' label='头像' valuePropName='fileList' getValueFromEvent={e => console.log(e)}>
@@ -156,7 +138,7 @@ export const Register = ({ children }: { children: ReactNode }) => {
 				</Form.Item>
 
 				<Form.Item name='channelDes' label='自我描述'>
-					<Input.TextArea />
+					<Input.TextArea maxLength={500} />
 				</Form.Item>
 
 				<Form.Item style={{ marginTop: '40px' }}
@@ -164,9 +146,9 @@ export const Register = ({ children }: { children: ReactNode }) => {
 					<Button style={{ marginRight: '20px' }} type='primary' htmlType='submit'>
 						注册
 					</Button>
-					<Button htmlType='button'>
-						跳过
-					</Button>
+					{/*<Button htmlType='button' onClick={skipLogin}>*/}
+					{/*	跳过*/}
+					{/*</Button>*/}
 				</Form.Item>
 			</Form>
 			{children}

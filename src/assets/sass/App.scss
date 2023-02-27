@@ -1,5 +1,88 @@
 @import "reset";
 @import "base";
 @import "font";
+@import "mixin";
 
-.container { height: 100%;}
+.container {
+  height: 100%;
+}
+
+.authenticated-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  .greeting-title {
+    margin-bottom: 50px;
+    width: 100%;
+    font-size: 64px;
+    text-align: center;
+  }
+
+  .form-style {
+    @include form-width;
+  }
+
+  .toggle-text {
+    padding: 0;
+    @include form-width;
+    text-align: left;
+  }
+}
+
+.bolg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  border: #e5e7eb solid 1px;
+
+  .logo {
+    margin-left: 30px;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .user-status-bar {
+    .user-avatar {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      vertical-align: middle;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .user-name {
+      margin-left: 5px;
+    }
+  }
+}
+
+.user-info {
+  display: flex;
+  padding: 100px 150px 0;
+
+  .left-column {
+    width: 200px;
+    flex-shrink: 0;
+
+    .user-avatar {
+      overflow: hidden;
+      border-radius: 50%;
+      width: 130px;
+      height: 130px;
+      background-position: center;
+      background-size: cover;
+      text-indent: -10000px;
+    }
+  }
+
+  .right-column {
+    flex: 1;
+  }
+}

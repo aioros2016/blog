@@ -6,32 +6,36 @@
  */
 
 export interface RequestError extends Error {
-  error?: string | {
-    location: string;
-    msg: string;
-    param: string;
-    value: string;
-  }[];
+	error?: string | {
+		location: string;
+		msg: string;
+		param: string;
+		value: string;
+	}[];
 }
 
 export interface RequestSuccess<T> {
-  result?: T | null,
-  code: number;
-  message?: string;
+	result?: T | null,
+	code: number;
+	message?: string;
 }
 
 export type RequestMethods = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export interface UserInfo {
-  username: string;
-  age: number;
-  email: string;
-  mobile: string;
-  avatar?: string;
-  fans: number;
-  channelDes?: string;
-  createAt: string;
-  updateAt: string;
-  token?: string;
-  _id: string;
+	username: string;
+	age: number;
+	email: string;
+	mobile: string;
+	avatar?: {
+		url: string;
+		size: number;
+		type: string;
+	};
+	fans: number;
+	channelDes?: string;
+	createAt: string;
+	updateAt: string;
+	token?: string;
+	_id: string;
 }

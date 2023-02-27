@@ -9,12 +9,32 @@ import { PlusOutlined } from '@ant-design/icons'
 import { FormInstance, message, Upload } from 'antd'
 import type { UploadProps } from 'antd/es/upload'
 import type { UploadFile } from 'antd/es/upload/interface'
+import { RequestSuccess } from '../types'
+import { request, requestError } from '../service/base'
+
+export const onRequest = async (imgList: any) => {
+	console.log(imgList)
+	const formData = new FormData()
+	formData.append('avatar', imgList)
+	try {
+		const { result } = await request<FormData, RequestSuccess<{ url: string; size: number; type: string }>>({
+			url: 'user/avatar',
+			method: 'POST',
+			data: formData
+		})
+		return Promise.resolve(result)
+	} catch (error) {
+		console.error(error)
+		requestError(error)
+	}
+}
 
 /**
  * 图片上传前
  * @param file 上传的图片
  */
 const beforeUpload = (file: UploadFile) => {
+	console.log(file)
 	const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
 	if (!isJpgOrPng) {
 		message.error('只支持上传JPG/PNG格式的图片')
@@ -26,8 +46,25 @@ const beforeUpload = (file: UploadFile) => {
 	return isJpgOrPng && isLt500
 }
 
-const FileUpload = ({ form }: { form: FormInstance<any> }) => {
-	const [fileList, setFileList] = useState<UploadFile[]>([])
+const FileUpload = ({ form, file }: {
+	form: FormInstance<any>, file?: {
+		url: string;
+		size: number;
+		type: string;
+	}
+}) => {
+	const fileListInit: UploadFile[] = []
+	if (file) {
+		fileListInit.push({
+			uid: '-1',
+			name: 'avatar.png',
+			status: 'done',
+			url: file.url,
+			type: file.type,
+			size: file.size
+		})
+	}
+	const [fileList, setFileList] = useState<UploadFile[]>(fileListInit)
 
 	/**
 	 * 监听表单元素变化
@@ -35,7 +72,6 @@ const FileUpload = ({ form }: { form: FormInstance<any> }) => {
 	 */
 	const handleChange: UploadProps['onChange'] = (info) => {
 		const { file, fileList } = info
-		console.log(fileList)
 		if (!beforeUpload(file)) return
 		setFileList([...fileList])
 		form.setFieldValue('avatar', fileList)

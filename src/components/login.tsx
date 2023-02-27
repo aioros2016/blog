@@ -14,23 +14,14 @@ import {
 } from '../page/unAuthenticated/unAuthenticated.slice'
 import { request, requestError } from '../service/base'
 import { RequestSuccess, UserInfo } from '../types'
-import { useNavigate } from 'react-router-dom'
-import { useStoreFormVals } from '../hooks'
+import { resetUserInfo } from '../utils'
 
-export const Login = ({ children }: { children: ReactNode }) => {
-	const navigate = useNavigate()
+export const Login = ({ hide = false, children }: { hide?: boolean; children?: ReactNode }) => {
+	// const navigate = useNavigate()
 	const dispatch = useDispatch()
 	const submitData = useSelector(selectLoginDataState)
 	const [form] = Form.useForm()
 	const [loading, setLoading] = useState(false)
-	const [formVals, setFormVals] = useState(submitData)
-
-	useStoreFormVals<typeof submitData>(
-		form,
-		formVals,
-		'login',
-		submitData
-	)
 
 	/**
 	 * 提交登录
@@ -42,12 +33,13 @@ export const Login = ({ children }: { children: ReactNode }) => {
 			const { result } = await request<typeof submitData, RequestSuccess<UserInfo>>({
 				url: 'user/login',
 				method: 'POST',
-				data: values
+				data: {
+					email: values!.email.trim(),
+					password: values!.password.trim()
+				}
 			})
-			localStorage.setItem(tokenKey, result?.token || '')
-			navigate('/articles', { replace: true })
-			dispatch(unAuthenticatedAction.login(result))
-			dispatch(unAuthenticatedAction.storeSubmitData(['login', null]))
+			console.log(result)
+			resetUserInfo(dispatch, result!)
 		} catch (e) {
 			requestError(e)
 		} finally {
@@ -56,7 +48,7 @@ export const Login = ({ children }: { children: ReactNode }) => {
 	}
 
 	return (
-		<div className='authenticated-wrapper'>
+		<div className={`authenticated-wrapper ${hide ? 'hide' : ''}`}>
 			<h1 className='greeting-title'>欢迎回来</h1>
 			<Form
 				form={form}
@@ -64,7 +56,6 @@ export const Login = ({ children }: { children: ReactNode }) => {
 				{...formBaseProps}
 				initialValues={{ remember: true }}
 				onFinish={onFinish}
-				onValuesChange={e => setFormVals(Object.assign({ ...submitData }, e))}
 				autoComplete='off'
 				size='large'
 				className='form-style'
@@ -87,8 +78,9 @@ export const Login = ({ children }: { children: ReactNode }) => {
 					label='密码'
 					name='password'
 					rules={[
-						{ required: true, message: '请输入密码' }
-						// { pattern: /^\S*(?=\S{8,16})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])\S*$/, message: '长度8-16位，必须包含大小写字母和数字的组合' }
+						{ required: true, message: '请输入密码' },
+						{ max: 16, message: '最多输入16个字符' },
+						{ min: 8, message: '最少输入8个字符' }
 					]}
 				>
 					<Input.Password placeholder='请输入您的密码' allowClear />
@@ -99,9 +91,9 @@ export const Login = ({ children }: { children: ReactNode }) => {
 					<Button loading={loading} style={{ marginRight: '20px' }} type='primary' htmlType='submit'>
 						登录
 					</Button>
-					<Button htmlType='button' onClick={() => navigate('/articles', { replace: true })}>
-						跳过
-					</Button>
+					{/*<Button htmlType='button' onClick={skipLogin}>*/}
+					{/*	跳过*/}
+					{/*</Button>*/}
 				</Form.Item>
 			</Form>
 			{children}
