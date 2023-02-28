@@ -7,17 +7,18 @@
 import { useParams } from 'react-router'
 import { useSelector } from 'react-redux'
 import { selectUserInfoState } from '../unAuthenticated/unAuthenticated.slice'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { request, requestError } from '../../service/base'
 import { RequestSuccess, UserInfo } from '../../types'
-import { Button, Descriptions, Drawer, Form, Input, InputNumber } from 'antd'
+import { Button, Descriptions, Drawer } from 'antd'
 import { UserEdit } from '../../components/userEdit'
 import { formatDateTime } from '../../utils'
+import { Helmet } from 'react-helmet'
+import { HelmetProvider } from 'react-helmet-async'
 
 export const UserDetail = () => {
 	const params = useParams<'userId'>()
 	const storeUserInfo = useSelector(selectUserInfoState)
-	const [form] = Form.useForm()
 	const [userInfo, setUserInfo] = useState<typeof storeUserInfo>(null)
 	const [open, setOpen] = useState(false)
 
@@ -29,24 +30,32 @@ export const UserDetail = () => {
 		setOpen(false)
 	}
 
-	const fetchUserInfo = async () => {
+	const fetchUserInfo = useCallback(async () => {
 		try {
-			const { result } = await request<{}, RequestSuccess<UserInfo>>({ url: 'user/info' })
+			const { result } = await request<{}, RequestSuccess<UserInfo>>({
+				url: `user/info/${params.userId}`
+			})
 			console.log(result)
 			setUserInfo(result!)
 		} catch (error) {
 			requestError(error)
 		}
-	}
+	}, [params.userId])
 
 	useEffect(() => {
 		console.log('user detail page')
-		setUserInfo(storeUserInfo)
-		// !storeUserInfo ? fetchUserInfo() : setUserInfo(storeUserInfo)
-	}, [params.userId, storeUserInfo])
+		// setUserInfo(storeUserInfo)
+		userInfo?._id !== params.userId ? fetchUserInfo() : setUserInfo(storeUserInfo)
+	}, [fetchUserInfo, params.userId, storeUserInfo])
 
 	return (
 		<div className='user-info'>
+			<HelmetProvider>
+				<Helmet>
+					<title>个人资料</title>
+					<meta name='description' content='个人资料' />
+				</Helmet>
+			</HelmetProvider>
 			{userInfo?.avatar?.url && (
 				<div className='left-column'>
 					<div className='user-avatar' style={{ backgroundImage: `url(${userInfo.avatar.url})` }}>我的头像</div>
@@ -64,11 +73,13 @@ export const UserDetail = () => {
 						<div style={{ whiteSpace: 'pre-wrap' }}>{userInfo?.channelDes || '--'}</div>
 					</Descriptions.Item>
 				</Descriptions>
-				<div style={{ textAlign: 'right' }}>
-					<Button type='primary' size='large' onClick={showDrawer}>
-						编辑
-					</Button>
-				</div>
+				{storeUserInfo?._id === params.userId && (
+					<div style={{ textAlign: 'right' }}>
+						<Button type='primary' size='large' onClick={showDrawer}>
+							编辑
+						</Button>
+					</div>
+				)}
 			</div>
 			<Drawer title='编辑个人资料' placement='right' width={500} onClose={onClose} open={open}>
 				<UserEdit userInfo={userInfo} drawerOpen={open} onSuccess={onClose} />

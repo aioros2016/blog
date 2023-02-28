@@ -1,12 +1,9 @@
 @import "../../assets/sass/mixin";
 
 .authenticated-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  padding: 30px 0;
 
   .greeting-title {
     margin-bottom: 50px;
@@ -16,6 +13,7 @@
   }
 
   .form-style {
+    margin: 0 auto;
     @include form-width;
   }
 

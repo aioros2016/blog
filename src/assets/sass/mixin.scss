@@ -1,1 +1,18 @@
-@mixin form-width { width: 80%; max-width: 600px;}
+@mixin form-width {
+  width: 80%;
+  max-width: 600px;
+}
+
+@mixin vertical-centering {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+@mixin ellipsis($lineCount) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lineCount;
+}

@@ -4,33 +4,7 @@
 @import "mixin";
 
 .container {
-  height: 100%;
-}
-
-.authenticated-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-
-  .greeting-title {
-    margin-bottom: 50px;
-    width: 100%;
-    font-size: 64px;
-    text-align: center;
-  }
-
-  .form-style {
-    @include form-width;
-  }
-
-  .toggle-text {
-    padding: 0;
-    @include form-width;
-    text-align: left;
-  }
+  min-height: 100%;
 }
 
 .bolg-header {
@@ -65,7 +39,7 @@
 
 .user-info {
   display: flex;
-  padding: 100px 150px 0;
+  padding: 100px 12% 0;
 
   .left-column {
     width: 200px;

@@ -6,6 +6,7 @@
  */
 import { ReactNode, useState } from 'react'
 import { Button, Form, Input } from 'antd'
+import { Helmet } from 'react-helmet'
 import { formBaseProps, tokenKey } from '../const'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -48,7 +49,7 @@ export const Login = ({ hide = false, children }: { hide?: boolean; children?: R
 	}
 
 	return (
-		<div className={`authenticated-wrapper ${hide ? 'hide' : ''}`}>
+		<div className={`authenticated-wrapper vertical-centering ${hide ? 'hide' : ''}`}>
 			<h1 className='greeting-title'>欢迎回来</h1>
 			<Form
 				form={form}
@@ -95,8 +96,8 @@ export const Login = ({ hide = false, children }: { hide?: boolean; children?: R
 					{/*	跳过*/}
 					{/*</Button>*/}
 				</Form.Item>
+				{children}
 			</Form>
-			{children}
 		</div>
 	)
 }

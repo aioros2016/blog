@@ -29,14 +29,13 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 	// )
 
 	const onFinish = async (values: any) => {
+		delete values.confirm
 		console.log(values)
 		try {
 			let avatar
 			if (values.avatar?.length) {
 				avatar = await onRequest(values.avatar[0].originFileObj)
 			}
-			console.log(avatar)
-
 			await request<typeof submitData, RequestSuccess<UserInfo>>({
 				url: 'user/register',
 				method: 'POST',
@@ -62,7 +61,7 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 			<h1 className='greeting-title'>你好</h1>
 			<Form
 				form={form}
-				name='login'
+				name='register'
 				{...formBaseProps}
 				onFinish={onFinish}
 				autoComplete='off'
@@ -95,6 +94,29 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 					]}
 				>
 					<Input.Password allowClear />
+				</Form.Item>
+
+				<Form.Item
+					name='confirm'
+					label='确认密码'
+					dependencies={['password']}
+					hasFeedback
+					rules={[
+						{
+							required: true,
+							message: '请确认密码'
+						},
+						({ getFieldValue }) => ({
+							validator(_, value) {
+								if (!value || getFieldValue('password') === value) {
+									return Promise.resolve()
+								}
+								return Promise.reject(new Error('密码输入不一致'))
+							}
+						})
+					]}
+				>
+					<Input.Password />
 				</Form.Item>
 
 				<Form.Item
@@ -150,8 +172,9 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 					{/*	跳过*/}
 					{/*</Button>*/}
 				</Form.Item>
+				{children}
 			</Form>
-			{children}
+
 		</div>
 	)
 }

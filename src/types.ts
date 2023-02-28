@@ -14,10 +14,10 @@ export interface RequestError extends Error {
 	}[];
 }
 
-export interface RequestSuccess<T> {
+export interface RequestSuccess<T, M = ''> {
 	result?: T | null,
 	code: number;
-	message?: string;
+	msg?: M;
 }
 
 export type RequestMethods = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -38,4 +38,36 @@ export interface UserInfo {
 	updateAt: string;
 	token?: string;
 	_id: string;
+}
+
+export interface SubmitArticle {
+	title?: string;
+	content?: string;
+}
+
+export interface PagingParams {
+	pageNum?: number;
+	pageSize?: number
+}
+
+export interface Avatar {
+	url: string;
+	size: number;
+	type: string;
+}
+
+export interface Article {
+	title?: string;
+	content?: string;
+	user: {
+		username: string;
+		avatar?: Avatar;
+		_id: string;
+	};
+	commentCount: number;
+	likeCount: number;
+	disLikeCount: number;
+	createAt: string,
+	updateAt: string,
+	_id: string,
 }

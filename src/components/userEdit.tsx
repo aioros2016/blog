@@ -172,25 +172,27 @@ export const UserEdit = ({
 			</Form.Item>
 			{/*<Form.Item style={{ marginTop: '40px' }}*/}
 			{/*					 wrapperCol={{ offset: formBaseProps.labelCol.span, span: formBaseProps.wrapperCol.span }}>*/}
-			<Popconfirm
-				placement='topLeft'
-				title='确认要修改个人资料吗？'
-				description={ComfirmPop}
-				okText='确认'
-				cancelText='取消'
-				okButtonProps={{ disabled: !password }}
-				open={popconfirmState}
-				onConfirm={submitHandle}
-				onCancel={() => {
-					setPopconfirmState(false)
-					form.setFieldValue('password', '')
-				}}
-			>
-				<Button style={{ marginRight: '20px' }} type='primary' loading={loading}
-								onClick={openPopconfirm}>
-					提交
-				</Button>
-			</Popconfirm>
+			<div style={{ textAlign: 'right' }}>
+				<Popconfirm
+					placement='topLeft'
+					title='确认要修改个人资料吗？'
+					description={ComfirmPop}
+					okText='确认'
+					cancelText='取消'
+					okButtonProps={{ disabled: !password }}
+					open={popconfirmState}
+					onConfirm={submitHandle}
+					onCancel={() => {
+						setPopconfirmState(false)
+						form.setFieldValue('password', '')
+					}}
+				>
+					<Button type='primary' loading={loading}
+									onClick={openPopconfirm}>
+						提交
+					</Button>
+				</Popconfirm>
+			</div>
 			{/*</Form.Item>*/}
 		</Form>
 	)

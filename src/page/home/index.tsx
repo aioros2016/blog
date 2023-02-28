@@ -23,7 +23,7 @@ export const Home = () => {
 	const fetchUserInfo = useCallback(async () => {
 		if (!userToken) return
 		try {
-			const { result } = await request<{}, RequestSuccess<UserInfo>>({ url: 'user/info' })
+			const { result } = await request<{}, RequestSuccess<UserInfo>>({ url: `user/info` })
 			dispatch(unAuthenticatedAction.userInfo(result))
 		} catch (e) {
 			requestError(e)

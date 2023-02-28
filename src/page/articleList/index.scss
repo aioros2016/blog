@@ -1,0 +1,5 @@
+@import "../../assets/sass/mixin";
+
+.content-wrapper {
+  @include ellipsis(3)
+}

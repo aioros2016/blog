@@ -1,0 +1,35 @@
+.float-bar {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+}
+
+.float-button-wrpper {
+  width: 70px;
+
+  .float-button {
+    height: 70px;
+    background-color: #2f54eb;
+
+    &:hover {
+      background-color: #597ef7;
+    }
+  }
+
+  .float-button-icon {
+    font-size: 30px;
+  }
+}
+
+.divider {
+  position: relative;
+
+  &::before {
+    transition: background-color .3s;
+  }
+
+  &.focus::before {
+    background-color: #722ED1;
+    transition: background-color .3s;
+  }
+}
