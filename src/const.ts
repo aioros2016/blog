@@ -5,11 +5,13 @@
  * @Description: 文件描述
  */
 
-export const tokenKey = '__BLOG_TOKEN__';
+export const tokenKey = '__BLOG_TOKEN__'
 
 export const formBaseProps = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 20 }
+	labelCol: { span: 4 },
+	wrapperCol: { span: 20 }
 }
 
-export const userToken = localStorage.getItem(tokenKey);
+export const userToken = localStorage.getItem(tokenKey)
+
+export const PAGE_SIZE = 10

@@ -11,46 +11,18 @@ import { request, requestError } from '../../service/base'
 import { RequestSuccess, PagingParams, Article } from '../../types'
 import { Avatar, List, Tooltip } from 'antd'
 import { HelmetProvider } from 'react-helmet-async'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useArticle } from '../../hooks'
+import { PAGE_SIZE } from '../../const'
 import './index.scss'
 
-const PAGE_SIZE = 20
-
 export const ArticleList = () => {
-	const navigate = useNavigate()
-	const [articles, setArticles] = useState<Article[]>([])
-	const [total, setTotal] = useState(0)
+	const [page, setPage] = useState(1)
 
-	const fetchArticles = async (pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
-		try {
-			const { result } = await request<PagingParams, RequestSuccess<{
-				total: number,
-				dataList: Article[]
-			}>>({
-				url: 'article/list',
-				params: {
-					pageNum,
-					pageSize
-				}
-			})
-			console.log(result)
-			if (pageNum > 1) {
-				setArticles([...articles].concat([...result?.dataList || []]))
-			} else {
-				setArticles(result?.dataList || [])
-			}
-			setTotal(result?.total || 0)
-		} catch (error) {
-			requestError(error)
-		}
-	}
-
-	useEffect(() => {
-		fetchArticles()
-	}, [])
+	const { data, isLoading } = useArticle(page)
 
 	return (
-		<div>
+		<section className='articles-wrapper'>
 			<HelmetProvider>
 				<Helmet>
 					<title>文章列表</title>
@@ -58,30 +30,33 @@ export const ArticleList = () => {
 				</Helmet>
 			</HelmetProvider>
 			<List
+				style={{ minHeight: '500px' }}
+				loading={isLoading}
 				pagination={{
 					position: 'bottom',
 					align: 'end',
 					pageSize: PAGE_SIZE,
-					total,
-					onChange: (page) => {
-						fetchArticles(page)
-					}
+					total: data?.total,
+					hideOnSinglePage: true,
+					onChange: (page) => setPage(page)
 				}}
-				dataSource={articles}
+				dataSource={data?.dataList}
 				renderItem={(item, index) => (
 					<List.Item>
 						<List.Item.Meta
 							avatar={item.user.avatar?.url ? (
 								<Tooltip placement='topLeft' title={item.user.username}>
-									<Avatar src={item.user.avatar.url} onClick={() => navigate(`/userdetail/${item.user._id}`)} />
+									<NavLink to={`/userdetail/${item.user._id}`}>
+										<Avatar src={item.user.avatar.url} />
+									</NavLink>
 								</Tooltip>
 							) : null}
-							title={<a href='https://ant.design'>{item.title}</a>}
-							description={<div className='content-wrapper'>{item.content}</div>}
+							title={<NavLink to={`/articles/${item._id}`}>{item.title}</NavLink>}
+							description={<NavLink className='content-wrapper' to={`/articles/${item._id}`}>{item.content}</NavLink>}
 						/>
 					</List.Item>
 				)}
 			/>
-		</div>
+		</section>
 	)
 }

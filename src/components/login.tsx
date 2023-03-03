@@ -16,6 +16,7 @@ import {
 import { request, requestError } from '../service/base'
 import { RequestSuccess, UserInfo } from '../types'
 import { resetUserInfo } from '../utils'
+import { useNavigate } from 'react-router-dom'
 
 export const Login = ({ hide = false, children }: { hide?: boolean; children?: ReactNode }) => {
 	// const navigate = useNavigate()
@@ -55,7 +56,6 @@ export const Login = ({ hide = false, children }: { hide?: boolean; children?: R
 				form={form}
 				name='login'
 				{...formBaseProps}
-				initialValues={{ remember: true }}
 				onFinish={onFinish}
 				autoComplete='off'
 				size='large'

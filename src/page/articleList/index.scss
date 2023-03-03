@@ -1,5 +1,9 @@
 @import "../../assets/sass/mixin";
 
+.articles-wrapper {
+  padding-bottom: 30px
+}
+
 .content-wrapper {
   @include ellipsis(3)
 }

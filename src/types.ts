@@ -40,6 +40,12 @@ export interface UserInfo {
 	_id: string;
 }
 
+export interface showUserInfo {
+	_id: string;
+	username: string;
+	avatar?: Avatar;
+}
+
 export interface SubmitArticle {
 	title?: string;
 	content?: string;
@@ -59,15 +65,27 @@ export interface Avatar {
 export interface Article {
 	title?: string;
 	content?: string;
-	user: {
-		username: string;
-		avatar?: Avatar;
-		_id: string;
-	};
+	user: showUserInfo;
 	commentCount: number;
 	likeCount: number;
 	disLikeCount: number;
 	createAt: string,
 	updateAt: string,
 	_id: string,
+}
+
+export interface StoreArticle {
+	[userId: string]: {
+		title?: string;
+		content?: string;
+	}
+}
+
+export interface ArticleComment {
+	_id: string;
+	content: string;
+	article: Article;
+	user: showUserInfo;
+	createAt: string,
+	updateAt: string,
 }

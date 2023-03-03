@@ -9,6 +9,10 @@ import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.s
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { FormInstance } from 'antd'
+import { useQuery } from 'react-query'
+import { request, requestError } from '../service/base'
+import { Article, ArticleComment, PagingParams, RequestSuccess } from '../types'
+import { PAGE_SIZE } from '../const'
 
 /**
  * 防抖
@@ -50,4 +54,53 @@ export const useStoreFormVals = <T>(form: FormInstance, formVals: T, pathname: s
 			form.setFieldsValue(storeState)
 		}
 	}, [form, pathname, storeState, location.pathname])
+}
+
+/**
+ * 文章列表查询
+ * @param pageNum 第几页
+ * @param pageSize 一页几条数据
+ */
+export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
+	const fetchArticles = async () => {
+		try {
+			const { result } = await request<PagingParams, RequestSuccess<{
+				total: number,
+				dataList: Article[]
+			}>>({
+				url: 'article/list',
+				params: {
+					pageNum,
+					pageSize
+				}
+			})
+			return result
+		} catch (error) {
+			requestError(error)
+		}
+	}
+
+	return useQuery(['articles', pageNum], () => fetchArticles())
+}
+
+export const useComments = (id: string, pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
+	const fetchComments = async () => {
+		try {
+			const { result } = await request<{}, RequestSuccess<{
+				dataList: ArticleComment[],
+				total: number
+			}>>({
+				url: `article/comments/${id}`,
+				params: {
+					pageNum,
+					pageSize
+				}
+			})
+			return result
+		} catch (error) {
+			requestError(error)
+		}
+	}
+
+	return useQuery(['comments', id, pageNum], () => fetchComments())
 }

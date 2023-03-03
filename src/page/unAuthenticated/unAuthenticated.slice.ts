@@ -53,7 +53,6 @@ export const unAuthenticatedSlice = createSlice({
 		},
 		setUserInfo(state, { payload }) {
 			state.userInfo = payload
-			state.isGuest = false
 		},
 		logout(state) {
 			state.userInfo = null
@@ -74,8 +73,6 @@ export const unAuthenticatedSlice = createSlice({
 
 export const unAuthenticatedAction = unAuthenticatedSlice.actions
 export const selectIsLoginState = (state: RootState) => state.unAuthenticated.isLogin
-export const selectIsGuestState = (state: RootState) => state.unAuthenticated.isGuest
 export const selectUserInfoState = (state: RootState) => state.unAuthenticated.userInfo
-export const selectPrevStackState = (state: RootState) => state.unAuthenticated.prevStack
 export const selectRegisterDataState = (state: RootState) => state.unAuthenticated.registerSubmitData
 export const selectLoginDataState = (state: RootState) => state.unAuthenticated.loginSubmitData

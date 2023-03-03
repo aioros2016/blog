@@ -12,11 +12,6 @@
     text-align: center;
   }
 
-  .form-style {
-    margin: 0 auto;
-    @include form-width;
-  }
-
   .toggle-text {
     padding: 0;
     @include form-width;

@@ -16,3 +16,16 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: $lineCount;
 }
+
+@mixin singer-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin article-bottom-bar($marginTop) {
+  margin-top: $marginTop;
+  text-align: right;
+  color: gray;
+  font-size: 14px;
+}

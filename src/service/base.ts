@@ -38,7 +38,8 @@ export const request = <T, R>({
 		.catch((e: AxiosError) => Promise.reject(e.response?.data))
 }
 
-export const requestError = (e: unknown) => {
+export const requestError = (e: unknown, msg?: string) => {
+	if (msg) return message.error(msg)
 	const error = e as RequestError
 	if (Array.isArray(error.error)) {
 		return message.error(error?.error[0].msg || '其他错误，请稍候重试')

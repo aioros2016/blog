@@ -1,19 +1,33 @@
+@import "../../assets/sass/base";
+
 .float-bar {
   position: fixed;
-  right: 50px;
+  right: 0;
   bottom: 50px;
+  transition: transform .3s;
+  transform: translate3d(90%, 0, 0);
+
+  .animation {
+    animation: translateLeft 1s infinite ease-out;
+    color: #722ed1;
+  }
+
+  &:hover {
+    transform: translate3d(0, 0, 0);
+
+    .animation {
+      display: none;
+    }
+  }
 }
 
 .float-button-wrpper {
+  display: inline-block;
+  margin-left: 10px;
   width: 70px;
 
   .float-button {
     height: 70px;
-    background-color: #2f54eb;
-
-    &:hover {
-      background-color: #597ef7;
-    }
   }
 
   .float-button-icon {
@@ -31,5 +45,14 @@
   &.focus::before {
     background-color: #722ED1;
     transition: background-color .3s;
+  }
+}
+
+@keyframes translateLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-10px, 0, 0);
   }
 }

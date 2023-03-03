@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 图片上传
  */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { FormInstance, message, Upload } from 'antd'
 import type { UploadProps } from 'antd/es/upload'
@@ -76,6 +76,10 @@ const FileUpload = ({ form, file }: {
 		setFileList([...fileList])
 		form.setFieldValue('avatar', fileList)
 	}
+
+	useEffect(() => {
+		form.setFieldValue('avatar', fileList)
+	}, [form, fileList])
 
 	/**
 	 * 选取图片按钮

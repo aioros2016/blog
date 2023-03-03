@@ -1,11 +1,20 @@
 @import "mixin";
 
+$polar-green: #237804;
+$geek-blue: #2f54eb;
+$golden-purple: #722ed1;
+
 #root, .App {
   height: 100%;
 }
 
 .vertical-centering {
   @include vertical-centering;
+}
+
+.form-style {
+  margin: 0 auto;
+  @include form-width;
 }
 
 .show {
@@ -30,5 +39,25 @@
   &.focus::before {
     background-color: #722ED1;
     transition: background-color .3s;
+  }
+}
+
+.polar-green {
+  background-color: $polar-green;
+
+  &:hover {
+    background-color: #52c41a !important;
+  }
+}
+
+.golden-purple {
+  background-color: $golden-purple;
+}
+
+.geek-blue {
+  background-color: $geek-blue;
+
+  &:hover {
+    background-color: #597ef7 !important;
   }
 }

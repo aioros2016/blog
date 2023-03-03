@@ -4,12 +4,14 @@
  * @Company: orientsec.com.cn
  * @Description: 页头通用组件
  */
-import { Button, Dropdown, Popconfirm } from 'antd'
+import { Avatar, Button, Dropdown, Popconfirm } from 'antd'
 import { UserInfo } from '../types'
 import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { tokenKey } from '../const'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import React from 'react'
+import { authenticatedAction } from '../page/authenticated/authenticated.slice'
 
 export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	const dispatch = useDispatch()
@@ -19,10 +21,16 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	const items = [{
 		key: '1',
 		label: (
-			<Button type='link' onClick={() => {
-				navigate(`/userdetail/${userInfo?._id}`)
-				console.log(window.history.length)
-			}}>个人资料</Button>
+			<NavLink to={`/userdetail/${userInfo?._id}`}>
+				<Button type='link'>个人资料</Button>
+			</NavLink>
+		)
+	}, {
+		key: '2',
+		label: (
+			<NavLink to={`/resetpassword`}>
+				<Button type='link'>修改密码</Button>
+			</NavLink>
 		)
 	}]
 
@@ -30,6 +38,7 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	 * 账号登出
 	 */
 	const logout = () => {
+		dispatch(authenticatedAction.setDraft(['all', '']))
 		dispatch(unAuthenticatedAction.logout())
 		localStorage.removeItem(tokenKey)
 		navigate('/', { replace: true })
@@ -42,7 +51,7 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 				<Dropdown menu={{ items }} placement='bottomRight' arrow>
 					<Button type='link'>
 						{avatar && (
-							<span className='user-avatar' style={{ backgroundImage: `url(${avatar.url})` }} />
+							<Avatar src={avatar.url} />
 						)}
 						<span className='user-name'>{username}</span>
 					</Button>

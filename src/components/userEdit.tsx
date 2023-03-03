@@ -5,15 +5,16 @@
  * @Description: 文件描述
  */
 import { formBaseProps } from '../const'
-import { Button, Form, Input, InputNumber, InputRef, Popconfirm } from 'antd'
+import { Button, Form, Input, InputNumber, InputRef, message, Popconfirm } from 'antd'
 import FileUpload, { onRequest } from './upload'
 import React, { useEffect, useRef, useState } from 'react'
-import { RequestSuccess, UserInfo } from '../types'
+import { RequestError, RequestSuccess, UserInfo } from '../types'
 import { request, requestError } from '../service/base'
 import { selectRegisterDataState, unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { useParams } from 'react-router'
+import { resetUserInfo } from '../utils'
 
 export const UserEdit = ({
 													 userInfo,
@@ -46,12 +47,18 @@ export const UserEdit = ({
 	 * @param values 修改的键值对
 	 */
 	const onFinish = async (values: any) => {
+		// values.avatar = [userInfo?.avatar]
+		console.log(values, userInfo)
 		// values.avatar = userInfo?.avatar
-		console.log(values)
 		setLoading(true)
 		try {
-			let avatar
-			if (values.avatar?.length) {
+			const oldAvatar = values.avatar[0]
+			let avatar: { url: string; size: number; type: string } | null | undefined = oldAvatar ? {
+				url: oldAvatar.url,
+				size: oldAvatar.size,
+				type: oldAvatar.type
+			} : null
+			if (values.avatar?.length && !values.avatar[0]?.url) {
 				avatar = await onRequest(values.avatar[0].originFileObj)
 			}
 			const { result } = await request<Omit<typeof submitData, 'password'>, RequestSuccess<UserInfo>>({
@@ -63,10 +70,12 @@ export const UserEdit = ({
 					email: values.email.trim(),
 					mobile: values.mobile.trim(),
 					channelDes: values.channelDes,
-					avatar
+					avatar: avatar
 				}
 			})
-			dispatch(unAuthenticatedAction.setUserInfo(result))
+			resetUserInfo(dispatch, result!)
+			message.success('个人资料更新成功')
+			// dispatch(unAuthenticatedAction.setUserInfo(result))
 		} catch (error) {
 			requestError(error)
 			return Promise.reject(error)
@@ -80,15 +89,20 @@ export const UserEdit = ({
 	 */
 	const submitHandle = async () => {
 		try {
+			const values = await form.validateFields()
 			await onFinish({
-				...form.getFieldsValue(),
+				...values,
 				password
 			})
 			setPassword('')
 			setPopconfirmState(false)
 			onSuccess?.()
 		} catch (error) {
-			console.error(error)
+			const e = error as RequestError
+			console.error(e)
+			if (e.error) {
+				requestError(error)
+			}
 		}
 	}
 
