@@ -7,10 +7,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { unAuthenticatedSlice } from '../page/unAuthenticated/unAuthenticated.slice'
 import { authenticatedSlice } from '../page/authenticated/authenticated.slice'
+import { articleDetailSlice } from '../page/articleDetail/articleDetail.slice'
 
 export const rootReducer = {
 	unAuthenticated: unAuthenticatedSlice.reducer,
-	authenticated: authenticatedSlice.reducer
+	authenticated: authenticatedSlice.reducer,
+	articleDetail: articleDetailSlice.reducer
 }
 
 export const store = configureStore({

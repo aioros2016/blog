@@ -6,9 +6,9 @@
  */
 import { Avatar, Button, Dropdown, Popconfirm } from 'antd'
 import { UserInfo } from '../types'
-import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
+import { selectUserInfoState, unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { tokenKey } from '../const'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useNavigate } from 'react-router-dom'
 import React from 'react'
 import { authenticatedAction } from '../page/authenticated/authenticated.slice'
@@ -16,12 +16,13 @@ import { authenticatedAction } from '../page/authenticated/authenticated.slice'
 export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const storeUserInfo = useSelector(selectUserInfoState)
 	const { username, avatar } = userInfo || {}
 
 	const items = [{
 		key: '1',
 		label: (
-			<NavLink to={`/userdetail/${userInfo?._id}`}>
+			<NavLink to={`/userdetail/${storeUserInfo?._id}`}>
 				<Button type='link'>个人资料</Button>
 			</NavLink>
 		)

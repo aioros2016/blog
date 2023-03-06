@@ -5,19 +5,22 @@
  * @Description: 评论回复组件
  */
 import { Button, Drawer, Form, Input, message } from 'antd'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { request, requestError } from '../service/base'
 import { RequestSuccess, SubmitArticle } from '../types'
 import { CloseOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
+import { useDispatch, useSelector } from 'react-redux'
+import { articleDetailAction, selectCommentOpenState } from '../page/articleDetail/articleDetail.slice'
 
 const WriteComment = (props: any, ref: any) => {
+	const dispatch = useDispatch()
 	const [form] = Form.useForm()
-	const [openDrawer, setOpenDrawer] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const queryClient = useQueryClient()
+	const openDrawer = useSelector(selectCommentOpenState)
 	const pathList = location.pathname.split('/')
 
 	const onFinish = async (values: {
@@ -37,7 +40,7 @@ const WriteComment = (props: any, ref: any) => {
 				data: values
 			})
 			message.success(msg)
-			setOpenDrawer(false)
+			dispatch(articleDetailAction.setCommentOpen(false))
 			form.resetFields()
 			queryClient.invalidateQueries('comments')
 		} catch (error) {
@@ -49,14 +52,14 @@ const WriteComment = (props: any, ref: any) => {
 
 	useImperativeHandle(ref, () => {
 		return {
-			open: () => setOpenDrawer(true),
-			hide: () => setOpenDrawer(false)
+			open: () => dispatch(articleDetailAction.setCommentOpen(true)),
+			hide: () => dispatch(articleDetailAction.setCommentOpen(false))
 		}
 	})
 
 	useEffect(() => {
 		if (!location.pathname.match(/^\/articles\/\w+$/)) {
-			setOpenDrawer(false)
+			dispatch(articleDetailAction.setCommentOpen(false))
 		}
 	}, [location.pathname])
 
@@ -66,8 +69,8 @@ const WriteComment = (props: any, ref: any) => {
 			title='评论回复'
 			placement='bottom'
 			closable={false}
-			extra={<CloseOutlined onClick={() => setOpenDrawer(false)} />}
-			onClose={() => setOpenDrawer(false)}
+			extra={<CloseOutlined onClick={() => dispatch(articleDetailAction.setCommentOpen(false))} />}
+			onClose={() => dispatch(articleDetailAction.setCommentOpen(false))}
 			open={openDrawer}
 		>
 			<Form

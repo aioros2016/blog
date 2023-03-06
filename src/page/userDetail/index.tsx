@@ -5,22 +5,27 @@
  * @Description: 用户详情
  */
 import { useParams } from 'react-router'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectUserInfoState } from '../unAuthenticated/unAuthenticated.slice'
 import React, { useCallback, useEffect, useState } from 'react'
-import { request, requestError } from '../../service/base'
+import { requestError } from '../../service/base'
 import { RequestSuccess, UserInfo } from '../../types'
-import { Button, Descriptions, Drawer } from 'antd'
+import { Avatar, Button, Descriptions, Drawer } from 'antd'
 import { UserEdit } from '../../components/userEdit'
-import { formatDateTime } from '../../utils'
+import { formatDateTime, reLogin } from '../../utils'
 import { Helmet } from 'react-helmet'
 import { HelmetProvider } from 'react-helmet-async'
+import { userInfoService } from '../../service/user'
+import { AxiosResponse } from 'axios'
+import { UserOutlined } from '@ant-design/icons'
 
 export const UserDetail = () => {
+	const dispatch = useDispatch()
 	const params = useParams<'userId'>()
 	const storeUserInfo = useSelector(selectUserInfoState)
 	const [userInfo, setUserInfo] = useState<typeof storeUserInfo>(null)
 	const [open, setOpen] = useState(false)
+	const isMe = params.userId === storeUserInfo?._id
 
 	const showDrawer = () => {
 		setOpen(true)
@@ -32,20 +37,20 @@ export const UserDetail = () => {
 
 	const fetchUserInfo = useCallback(async () => {
 		try {
-			const { result } = await request<{}, RequestSuccess<UserInfo>>({
-				url: `user/info/${params.userId}`
-			})
-			console.log(result)
+			const { result } = await userInfoService<RequestSuccess<UserInfo>>(`user/detail/${params.userId}`)
 			setUserInfo(result!)
-		} catch (error) {
-			requestError(error)
+		} catch (e) {
+			const error = e as AxiosResponse
+			if (![401, 402].includes(error.status)) {
+				requestError(error.data)
+			}
+			reLogin(error, dispatch)
 		}
 	}, [params.userId])
 
 	useEffect(() => {
 		console.log('user detail page')
-		// setUserInfo(storeUserInfo)
-		userInfo?._id !== params.userId ? fetchUserInfo() : setUserInfo(storeUserInfo)
+		!isMe ? fetchUserInfo() : setUserInfo(storeUserInfo)
 	}, [fetchUserInfo, params.userId, storeUserInfo])
 
 	return (
@@ -56,24 +61,32 @@ export const UserDetail = () => {
 					<meta name='description' content='个人资料' />
 				</Helmet>
 			</HelmetProvider>
-			{userInfo?.avatar?.url && (
-				<div className='left-column'>
-					<div className='user-avatar' style={{ backgroundImage: `url(${userInfo.avatar.url})` }}>我的头像</div>
-				</div>
-			)}
+			<div className='left-column'>
+				{userInfo?.avatar?.url ? (
+					<Avatar size={130} src={userInfo?.avatar?.url} />
+				) : (
+					<Avatar size={130} icon={<UserOutlined />} />
+				)}
+			</div>
 			<div className='right-column'>
 				<Descriptions title={userInfo?.username} layout='vertical'>
 					<Descriptions.Item label='年龄'>{userInfo?.age ?? '--'}</Descriptions.Item>
-					<Descriptions.Item label='邮箱'>{userInfo?.email}</Descriptions.Item>
-					<Descriptions.Item label='手机号'>{userInfo?.mobile}</Descriptions.Item>
-					<Descriptions.Item label='粉丝数'>{userInfo?.fans}</Descriptions.Item>
-					<Descriptions.Item label='创建用户时间'>{formatDateTime(userInfo?.createAt)}</Descriptions.Item>
-					<Descriptions.Item label='更新用户时间'>{formatDateTime(userInfo?.updateAt)}</Descriptions.Item>
+					{isMe && (
+						<>
+							<Descriptions.Item label='邮箱'>{userInfo?.email}</Descriptions.Item>
+							<Descriptions.Item label='手机号'>{userInfo?.mobile}</Descriptions.Item>
+							<Descriptions.Item label='创建用户时间'>{formatDateTime(userInfo?.createAt)}</Descriptions.Item>
+							<Descriptions.Item label='更新用户时间'>{formatDateTime(userInfo?.updateAt)}</Descriptions.Item>
+						</>
+					)}
+					<Descriptions.Item label='粉丝数' span={2}>{userInfo?.fans}</Descriptions.Item>
 					<Descriptions.Item label='自我描述' span={3}>
-						<div style={{ whiteSpace: 'pre-wrap' }}>{userInfo?.channelDes || '--'}</div>
+						<div dangerouslySetInnerHTML={{
+							__html: userInfo?.channelDes || '--'
+						}}></div>
 					</Descriptions.Item>
 				</Descriptions>
-				{storeUserInfo?._id === params.userId && (
+				{isMe && (
 					<div style={{ textAlign: 'right' }}>
 						<Button type='primary' size='large' onClick={showDrawer}>
 							编辑

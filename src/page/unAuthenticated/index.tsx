@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 未登录组件
  */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Form, Col, Row } from 'antd'
 import { Login } from '../../components/login'
 import { Register } from '../../components/register'
@@ -13,14 +13,18 @@ import './index.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectIsLoginState, unAuthenticatedAction } from './unAuthenticated.slice'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import { useUrlQueryParams } from '../../utils'
 
 const Tip = () => {
-	const dispatch = useDispatch()
-	const isLogin = useSelector(selectIsLoginState)
+	const [params, setParam] = useUrlQueryParams(['type'])
+	const isLogin = !params.type || params.type === 'login'
+
 	return (
 		<Form.Item
 			wrapperCol={{ offset: formBaseProps.labelCol.span, span: formBaseProps.wrapperCol.span }}>
-			<Button type='link' className='toggle-text' onClick={() => dispatch(unAuthenticatedAction.setLogin(!isLogin))}>{
+			<Button type='link' className='toggle-text' onClick={() => setParam({
+				type: isLogin ? 'register' : 'login'
+			})}>{
 				isLogin ? '注册新账号' : '已有账号？直接登录！'
 			}</Button>
 		</Form.Item>
@@ -28,7 +32,9 @@ const Tip = () => {
 }
 
 export const UnAuthenticated = () => {
-	const isLogin = useSelector(selectIsLoginState)
+	const [params, setParam] = useUrlQueryParams(['type'])
+	const isLogin = !params.type || params.type === 'login'
+
 	return (
 		<>
 			<HelmetProvider>
@@ -37,8 +43,12 @@ export const UnAuthenticated = () => {
 					<meta name='description' content={`用户${isLogin ? '登录' : '注册'}`} />
 				</Helmet>
 			</HelmetProvider>
-			<Login hide={!isLogin} children={<Tip />} />
-			<Register hide={isLogin} children={<Tip />} />
+			<Login hide={!isLogin} children={
+				<Tip />}
+			/>
+			<Register hide={isLogin} children={
+				<Tip />}
+			/>
 		</>
 	)
 }

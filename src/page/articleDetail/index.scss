@@ -8,7 +8,6 @@
 .article-wrapper {
   display: flex;
   justify-content: center;
-  border-bottom: solid 1px rgba(5, 5, 5, .06);
   padding-bottom: 10px;
 
   .left-column {
@@ -18,6 +17,8 @@
 
   .right-column {
     flex: 1;
+    word-break: break-all;
+    white-space: pre-wrap;
 
     .article-title {
       margin-bottom: 30px;
@@ -60,4 +61,8 @@
   .bottom-bar {
     @include article-bottom-bar(85px);
   }
+}
+
+.comment-list {
+  border-top: solid 1px rgba(5, 5, 5, .06);
 }

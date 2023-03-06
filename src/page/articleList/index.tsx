@@ -4,21 +4,18 @@
  * @Company: orientsec.com.cn
  * @Description: 文章列表
  */
-
 import { Helmet } from 'react-helmet'
-import React, { useEffect, useState } from 'react'
-import { request, requestError } from '../../service/base'
-import { RequestSuccess, PagingParams, Article } from '../../types'
+import React, { useState } from 'react'
 import { Avatar, List, Tooltip } from 'antd'
 import { HelmetProvider } from 'react-helmet-async'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useArticle } from '../../hooks'
 import { PAGE_SIZE } from '../../const'
 import './index.scss'
+import { UserOutlined } from '@ant-design/icons'
 
 export const ArticleList = () => {
 	const [page, setPage] = useState(1)
-
 	const { data, isLoading } = useArticle(page)
 
 	return (
@@ -44,13 +41,17 @@ export const ArticleList = () => {
 				renderItem={(item, index) => (
 					<List.Item>
 						<List.Item.Meta
-							avatar={item.user.avatar?.url ? (
+							avatar={(
 								<Tooltip placement='topLeft' title={item.user.username}>
 									<NavLink to={`/userdetail/${item.user._id}`}>
-										<Avatar src={item.user.avatar.url} />
+										{
+											item.user.avatar?.url ?
+												<Avatar src={item.user.avatar.url} /> :
+												<Avatar icon={<UserOutlined />} />
+										}
 									</NavLink>
 								</Tooltip>
-							) : null}
+							)}
 							title={<NavLink to={`/articles/${item._id}`}>{item.title}</NavLink>}
 							description={<NavLink className='content-wrapper' to={`/articles/${item._id}`}>{item.content}</NavLink>}
 						/>

@@ -7,6 +7,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../store'
 import { UserInfo } from '../../types'
+import { escapeHtml } from '../../utils'
 
 export interface RegisterSumbmitData {
 	username: string;
@@ -52,6 +53,14 @@ export const unAuthenticatedSlice = createSlice({
 			state.isGuest = payload
 		},
 		setUserInfo(state, { payload }) {
+			const userInfo = payload
+			if (userInfo) {
+				for (let key in userInfo) {
+					if (typeof userInfo[key] === 'string') {
+						userInfo[key] = escapeHtml(userInfo[key])
+					}
+				}
+			}
 			state.userInfo = payload
 		},
 		logout(state) {

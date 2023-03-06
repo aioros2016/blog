@@ -6,17 +6,14 @@
  */
 import { ReactNode, useState } from 'react'
 import { Button, Form, Input } from 'antd'
-import { Helmet } from 'react-helmet'
-import { formBaseProps, tokenKey } from '../const'
+import { formBaseProps } from '../const'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-	unAuthenticatedAction,
 	selectLoginDataState
 } from '../page/unAuthenticated/unAuthenticated.slice'
 import { request, requestError } from '../service/base'
 import { RequestSuccess, UserInfo } from '../types'
 import { resetUserInfo } from '../utils'
-import { useNavigate } from 'react-router-dom'
 
 export const Login = ({ hide = false, children }: { hide?: boolean; children?: ReactNode }) => {
 	// const navigate = useNavigate()
@@ -43,6 +40,7 @@ export const Login = ({ hide = false, children }: { hide?: boolean; children?: R
 			console.log(result)
 			resetUserInfo(dispatch, result!)
 		} catch (e) {
+			console.log(e)
 			requestError(e)
 		} finally {
 			setLoading(false)

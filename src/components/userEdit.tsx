@@ -10,11 +10,10 @@ import FileUpload, { onRequest } from './upload'
 import React, { useEffect, useRef, useState } from 'react'
 import { RequestError, RequestSuccess, UserInfo } from '../types'
 import { request, requestError } from '../service/base'
-import { selectRegisterDataState, unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
+import { selectRegisterDataState } from '../page/unAuthenticated/unAuthenticated.slice'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 import { useParams } from 'react-router'
-import { resetUserInfo } from '../utils'
+import { escapeHtmlStr, resetUserInfo } from '../utils'
 
 export const UserEdit = ({
 													 userInfo,
@@ -47,9 +46,6 @@ export const UserEdit = ({
 	 * @param values 修改的键值对
 	 */
 	const onFinish = async (values: any) => {
-		// values.avatar = [userInfo?.avatar]
-		console.log(values, userInfo)
-		// values.avatar = userInfo?.avatar
 		setLoading(true)
 		try {
 			const oldAvatar = values.avatar[0]
@@ -181,7 +177,7 @@ export const UserEdit = ({
 				<FileUpload form={form} file={userInfo?.avatar} />
 			</Form.Item>
 
-			<Form.Item name='channelDes' label='自我描述' initialValue={userInfo?.channelDes}>
+			<Form.Item name='channelDes' label='自我描述' initialValue={escapeHtmlStr(userInfo?.channelDes || '')}>
 				<Input.TextArea maxLength={500} />
 			</Form.Item>
 			{/*<Form.Item style={{ marginTop: '40px' }}*/}

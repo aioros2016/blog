@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 自定义Hook
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
@@ -79,8 +79,8 @@ export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE) =>
 			requestError(error)
 		}
 	}
-
-	return useQuery(['articles', pageNum], () => fetchArticles())
+	
+	return useQuery(['articles', pageNum], fetchArticles)
 }
 
 export const useComments = (id: string, pageNum: number = 1, pageSize: number = PAGE_SIZE) => {

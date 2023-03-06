@@ -10,6 +10,7 @@ import { tokenKey } from '../const'
 import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { UserInfo } from '../types'
 import { AnyAction, Dispatch } from '@reduxjs/toolkit'
+import { AxiosResponse } from 'axios'
 
 export const resetUserInfo = (dispatch: Dispatch<AnyAction>, result: UserInfo | null) => {
 	localStorage.setItem(tokenKey, result?.token || '')
@@ -81,4 +82,43 @@ export const formatDateTime = (date?: string) => {
 	const minutes = dateTime.getMinutes().toString().padStart(2, '0')
 	const seconds = dateTime.getSeconds().toString().padStart(2, '0')
 	return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`
+}
+
+export const reLogin = (error: AxiosResponse, dispatch: Dispatch<AnyAction>) => {
+	if ([401, 402].includes(error.status)) {
+		dispatch(unAuthenticatedAction.logout())
+	}
+}
+
+/**
+ * 解码Html实体
+ * @param str Html实体
+ */
+export const escapeHtmlStr = (str: string) => {
+	if (!str) return ''
+	str = str.replace(/&amp;/g, '&')
+	str = str.replace(/&lt;/g, '<')
+	str = str.replace(/&gt;/g, '>')
+	str = str.replace(/&quot;/g, '"')
+	str = str.replace(/&#39;/g, '\'')
+	str = str.replace(/<br\/>/g, '\n')
+	str = str.replace(/&nbsp;/g, ' ')
+	return str
+}
+
+/**
+ * 字符转义
+ * @param str 输入的字符串
+ * @returns {*}
+ */
+export const escapeHtml = (str: string) => {
+	if (!str) return ''
+	str = str.replace(/&/g, '&amp;')
+	str = str.replace(/</g, '&lt;')
+	str = str.replace(/>/g, '&gt;')
+	str = str.replace(/"/g, '&quot;')
+	str = str.replace(/'/g, '&#39;')
+	str = str.replace(/\n/g, '<br/>')
+	str = str.replace(/ /g, '&nbsp;')
+	return str
 }

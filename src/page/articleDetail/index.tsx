@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 文章详情
  */
-import { Avatar, List, Tooltip } from 'antd'
+import { Avatar, Button, List, Tooltip } from 'antd'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { request, requestError } from '../../service/base'
@@ -17,8 +17,11 @@ import { PAGE_SIZE } from '../../const'
 import { NavLink } from 'react-router-dom'
 import { useComments } from '../../hooks'
 import { UserOutlined } from '@ant-design/icons'
+import { useDispatch } from 'react-redux'
+import { articleDetailAction } from './articleDetail.slice'
 
 export const ArticleDetail = () => {
+	const dispatch = useDispatch()
 	const params = useParams()
 	const [detail, setDetail] = useState<Article | null>(null)
 	const [page, setPage] = useState(1)
@@ -36,24 +39,8 @@ export const ArticleDetail = () => {
 
 	const { isLoading, data } = useComments(params.id!, page)
 
-	// const fetchArticleComments = useCallback(async () => {
-	// 	try {
-	// 		const { result } = await request<{}, RequestSuccess<{
-	// 			dataList: ArticleComment[],
-	// 			total: number
-	// 		}>>({
-	// 			url: `article/comments/${params.id}`
-	// 		})
-	// 		setComments(result?.dataList || [])
-	// 		setTotal(result?.total || 0)
-	// 	} catch (error) {
-	// 		requestError(error)
-	// 	}
-	// }, [params.id])
-
 	useEffect(() => {
 		fetchArticle()
-		// fetchArticleComments()
 	}, [params, fetchArticle])
 
 	return (
@@ -67,8 +54,10 @@ export const ArticleDetail = () => {
 			<section className='article-wrapper'>
 				<div className='left-column'>
 					<NavLink to={`/userdetail/${detail?.user._id}`}>
-						{detail?.user.avatar?.url && (
+						{detail?.user.avatar?.url ? (
 							<Avatar style={{ marginBottom: '15px' }} size={100} src={detail?.user.avatar?.url} />
+						) : (
+							<Avatar style={{ marginBottom: '15px' }} size={100} icon={<UserOutlined />} />
 						)}
 						<Tooltip placement='bottom' title={detail?.user.username} arrow={true}>
 							<div className='author'>{detail?.user.username}</div>
@@ -78,50 +67,63 @@ export const ArticleDetail = () => {
 				<div className='right-column'>
 					<article className='article'>
 						{detail?.title && (
-							<h1 className='article-title'>{detail?.title}</h1>
+							<h1 className='article-title' dangerouslySetInnerHTML={{
+								__html: detail?.title
+							}} />
 						)}
 						{detail?.content && (
-							<div className='article-content'>{detail?.content}</div>
+							<div className='article-content' dangerouslySetInnerHTML={{
+								__html: detail?.content
+							}} />
 						)}
 						<div className='bottom-bar'>发表于：{formatDateTime(detail?.createAt)}</div>
 					</article>
 				</div>
 			</section>
-			<List
-				style={{ minHeight: '500px' }}
-				loading={isLoading}
-				pagination={{
-					position: 'bottom',
-					align: 'end',
-					pageSize: PAGE_SIZE,
-					total: data?.total,
-					hideOnSinglePage: true,
-					onChange: (page) => setPage(page)
-				}}
-				dataSource={data?.dataList}
-				renderItem={(item, index) => (
-					<List.Item className='comment'>
-						<List.Item.Meta
-							avatar={(
-								<NavLink to={`/userdetail/${item.user._id}`}>
-									{item.user.avatar?.url ? (
-										<Avatar style={{ marginBottom: '15px' }} size={100} src={item.user.avatar.url} />
-									) : (
-										<Avatar style={{ marginBottom: '15px' }} size={100} icon={<UserOutlined />} />
-									)}
-									<Tooltip placement='bottom' title={item?.user.username} arrow={true}>
-										<div className='author'>{item?.user.username}</div>
-									</Tooltip>
-								</NavLink>
-							)}
-							description={<div className='comment-item'>
-								<div className='comment-content'>{item.content}</div>
-								<div className='bottom-bar'>评论于：{formatDateTime(item?.createAt)}</div>
-							</div>}
-						/>
-					</List.Item>
-				)}
-			/>
+			{!!data?.dataList.length && (
+				<List
+					rowKey='_id'
+					className='comment-list'
+					loading={isLoading}
+					pagination={{
+						position: 'bottom',
+						align: 'end',
+						pageSize: PAGE_SIZE,
+						total: data?.total,
+						hideOnSinglePage: true,
+						onChange: (page) => setPage(page)
+					}}
+					dataSource={data?.dataList}
+					renderItem={(item, index) => (
+						<List.Item className='comment'>
+							<List.Item.Meta
+								avatar={(
+									<NavLink to={`/userdetail/${item.user._id}`}>
+										{item.user.avatar?.url ? (
+											<Avatar style={{ marginBottom: '15px' }} size={100} src={item.user.avatar.url} />
+										) : (
+											<Avatar style={{ marginBottom: '15px' }} size={100} icon={<UserOutlined />} />
+										)}
+										<Tooltip placement='bottom' title={item?.user.username} arrow={true}>
+											<div className='author'>{item?.user.username}</div>
+										</Tooltip>
+									</NavLink>
+								)}
+								description={<div className='comment-item'>
+									<div className='comment-content' dangerouslySetInnerHTML={{
+										__html: item.content
+									}} />
+									<div className='bottom-bar'>评论于：{formatDateTime(item?.createAt)}</div>
+								</div>}
+							/>
+						</List.Item>
+					)}
+				/>
+			)}
+			<div style={{ marginTop: '20px', textAlign: 'right' }}>
+				<Button type='primary' size='large'
+								onClick={() => dispatch(articleDetailAction.setCommentOpen(true))}>评论回复</Button>
+			</div>
 		</div>
 	)
 }

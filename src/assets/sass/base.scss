@@ -8,6 +8,13 @@ $golden-purple: #722ed1;
   height: 100%;
 }
 
+.spin-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .vertical-centering {
   @include vertical-centering;
 }

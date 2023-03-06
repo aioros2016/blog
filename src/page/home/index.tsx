@@ -10,28 +10,34 @@ import {
 	selectUserInfoState,
 	unAuthenticatedAction
 } from '../unAuthenticated/unAuthenticated.slice'
-import React, { useCallback, useEffect } from 'react'
-import { request, requestError } from '../../service/base'
-import { RequestError, RequestSuccess, UserInfo } from '../../types'
+import React, { useCallback, useEffect, useState } from 'react'
+import { requestError } from '../../service/base'
+import { RequestSuccess, UserInfo } from '../../types'
 import { UnAuthenticated } from '../unAuthenticated'
 import { Authenticated } from '../authenticated'
 import { userToken } from '../../const'
+import { AxiosResponse } from 'axios'
+import { userInfoService } from '../../service/user'
+import { LoadingSpin } from '../../components/loading'
 
 export const Home = () => {
 	const dispatch = useDispatch()
 	const userInfo = useSelector(selectUserInfoState)
+	const [loading, setLoading] = useState(false)
 
 	const fetchUserInfo = useCallback(async () => {
 		if (!userToken) return
+		setLoading(true)
 		try {
-			const { result } = await request<{}, RequestSuccess<UserInfo>>({ url: `user/info` })
+			const { result } = await userInfoService<RequestSuccess<UserInfo>>(`user/info`)
 			dispatch(unAuthenticatedAction.userInfo(result))
 		} catch (e) {
-			console.error(e)
-			const error = e as RequestError & { code: number }
-			if (error.error !== '无效的token') {
-				requestError(e)
+			const error = e as AxiosResponse
+			if (![401, 402].includes(error.status)) {
+				requestError(error.data)
 			}
+		} finally {
+			setLoading(false)
 		}
 	}, [dispatch])
 
@@ -45,7 +51,7 @@ export const Home = () => {
 		<div className='container'>
 			<Router>
 				{
-					!userInfo ? <UnAuthenticated /> : <Authenticated />
+					loading ? <LoadingSpin /> : !userInfo ? <UnAuthenticated /> : <Authenticated />
 				}
 			</Router>
 		</div>

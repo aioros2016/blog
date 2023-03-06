@@ -19,7 +19,7 @@ interface submitData {
 export const ResetPassword = () => {
 	const [form] = Form.useForm()
 	const [loading, setLoading] = useState(false)
-
+	console.log('密码')
 	/**
 	 * 表单提交
 	 */
