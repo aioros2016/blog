@@ -60,27 +60,39 @@ export const useStoreFormVals = <T>(form: FormInstance, formVals: T, pathname: s
  * 文章列表查询
  * @param pageNum 第几页
  * @param pageSize 一页几条数据
+ * @param searchParams 搜索文案
  */
-export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
+export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE, searchParams?: string) => {
+	console.log('查询')
 	const fetchArticles = async () => {
 		try {
+			const params: {
+				pageNum: number;
+				pageSize: number;
+				searchParams?: string;
+			} = {
+				pageNum,
+				pageSize
+			}
+			if (searchParams) {
+				params.searchParams = searchParams
+			}
 			const { result } = await request<PagingParams, RequestSuccess<{
 				total: number,
 				dataList: Article[]
 			}>>({
-				url: 'article/list',
-				params: {
-					pageNum,
-					pageSize
-				}
+				url: `article/${searchParams ? 'search' : 'list'}`,
+				params
 			})
 			return result
 		} catch (error) {
 			requestError(error)
 		}
 	}
-	
-	return useQuery(['articles', pageNum], fetchArticles)
+
+	return useQuery(['articles', pageNum, searchParams], fetchArticles, {
+		refetchOnWindowFocus: false
+	})
 }
 
 export const useComments = (id: string, pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
@@ -104,3 +116,25 @@ export const useComments = (id: string, pageNum: number = 1, pageSize: number = 
 
 	return useQuery(['comments', id, pageNum], () => fetchComments())
 }
+
+// const useSearch = () => {
+// 	const request = useHttp()
+//
+// 	/**
+// 	 * 第一个参数是执行操作的异步函数，在返回的mutate中触发
+// 	 * 第二个参数是执行成功或者失败的一些配置函数，可用于一些处理缓存的操作，例如乐观更新
+// 	 */
+// 	return useMutation(
+// 		(data) =>
+// 			request(`todos`, {
+// 				data,
+// 				method: 'POST',
+// 			}),
+// 		{
+// 			onSuccess(){}
+// 			onError(){}
+// 			onSettled(){}
+// 			...
+// 		}
+// 	)
+// }

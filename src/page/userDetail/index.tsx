@@ -71,15 +71,17 @@ export const UserDetail = () => {
 			<div className='right-column'>
 				<Descriptions title={userInfo?.username} layout='vertical'>
 					<Descriptions.Item label='年龄'>{userInfo?.age ?? '--'}</Descriptions.Item>
-					{isMe && (
+					{isMe ? (
 						<>
 							<Descriptions.Item label='邮箱'>{userInfo?.email}</Descriptions.Item>
 							<Descriptions.Item label='手机号'>{userInfo?.mobile}</Descriptions.Item>
 							<Descriptions.Item label='创建用户时间'>{formatDateTime(userInfo?.createAt)}</Descriptions.Item>
 							<Descriptions.Item label='更新用户时间'>{formatDateTime(userInfo?.updateAt)}</Descriptions.Item>
 						</>
+					) : (
+						<Descriptions.Item> </Descriptions.Item>
 					)}
-					<Descriptions.Item label='粉丝数' span={2}>{userInfo?.fans}</Descriptions.Item>
+					<Descriptions.Item label='粉丝数'>{userInfo?.fans}</Descriptions.Item>
 					<Descriptions.Item label='自我描述' span={3}>
 						<div dangerouslySetInnerHTML={{
 							__html: userInfo?.channelDes || '--'

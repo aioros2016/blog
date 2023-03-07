@@ -12,13 +12,15 @@ interface State {
 		title?: string;
 		content?: string;
 	};
+	searchParams: string;
 }
 
 const initialState: State = {
 	draft: {
 		title: '',
 		content: ''
-	}
+	},
+	searchParams: ''
 }
 
 export const authenticatedSlice = createSlice({
@@ -33,9 +35,13 @@ export const authenticatedSlice = createSlice({
 				state.draft.title = text
 				state.draft.content = text
 			}
+		},
+		setSearchParams(state, { payload }) {
+			state.searchParams = payload
 		}
 	}
 })
 
 export const authenticatedAction = authenticatedSlice.actions
 export const selectDraftState = (state: RootState) => state.authenticated.draft
+export const selectSearchParams = (state: RootState) => state.authenticated.searchParams

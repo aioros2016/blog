@@ -13,10 +13,13 @@ import { useArticle } from '../../hooks'
 import { PAGE_SIZE } from '../../const'
 import './index.scss'
 import { UserOutlined } from '@ant-design/icons'
+import { useSelector } from 'react-redux'
+import { selectSearchParams } from '../authenticated/authenticated.slice'
 
 export const ArticleList = () => {
+	const searchParams = useSelector(selectSearchParams)
 	const [page, setPage] = useState(1)
-	const { data, isLoading } = useArticle(page)
+	const { data, isLoading } = useArticle(page, 10, searchParams)
 
 	return (
 		<section className='articles-wrapper'>

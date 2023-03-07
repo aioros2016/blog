@@ -53,7 +53,8 @@ export interface SubmitArticle {
 
 export interface PagingParams {
 	pageNum?: number;
-	pageSize?: number
+	pageSize?: number;
+	searchParams?: string;
 }
 
 export interface Avatar {

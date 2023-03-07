@@ -14,10 +14,38 @@
   height: 72px;
   border-bottom: #e5e7eb solid 1px;
 
-  .logo {
-    margin-left: 30px;
-    font-size: 24px;
-    font-weight: 800;
+  .left-area {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    .logo {
+      margin-left: 30px;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .sub-title {
+      font-size: 12px;
+      color: #7e8c8d;
+    }
+  }
+
+  .search-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    width: 30%;
+
+    .search-icon {
+      color: #7e8c8d;
+      transition: color .3s;
+
+      &.search-activate {
+        color: #722ed1;
+        transition: color .3s;
+        cursor: pointer;
+      }
+    }
   }
 
   .user-status-bar {
