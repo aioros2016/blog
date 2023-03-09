@@ -1,7 +1,11 @@
 @import "../../assets/sass/mixin";
 
 .articles-wrapper {
-  padding-bottom: 30px
+  padding-bottom: 30px;
+
+  strong {
+    color: red;
+  }
 }
 
 .content-wrapper {

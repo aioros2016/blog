@@ -7,30 +7,22 @@
 import { Button, Form, Input, InputNumber } from 'antd'
 import { formBaseProps } from '../const'
 import React, { ReactNode } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
-	selectRegisterDataState,
-	unAuthenticatedAction
+	selectRegisterDataState
 } from '../page/unAuthenticated/unAuthenticated.slice'
 import FileUpload, { onRequest } from './upload'
 import { request, requestError } from '../service/base'
 import { RequestSuccess, UserInfo } from '../types'
+import { useUrlQueryParams } from '../utils'
 
 export const Register = ({ hide = false, children }: { hide?: boolean; children: ReactNode }) => {
-	const dispatch = useDispatch()
 	const submitData = useSelector(selectRegisterDataState)
 	const [form] = Form.useForm()
-
-	// useStoreFormVals<typeof submitData>(
-	// 	form,
-	// 	formVals,
-	// 	'register',
-	// 	submitData
-	// )
+	const [params, setParam] = useUrlQueryParams(['type'])
 
 	const onFinish = async (values: any) => {
 		delete values.confirm
-		console.log(values)
 		try {
 			let avatar
 			if (values.avatar?.length) {
@@ -50,7 +42,7 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 				}
 			})
 			form.resetFields()
-			dispatch(unAuthenticatedAction.setLogin(true))
+			setParam({ type: 'login' })
 		} catch (e) {
 			requestError(e)
 		}

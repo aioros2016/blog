@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet'
 import React, { useState } from 'react'
 import { Avatar, List, Tooltip } from 'antd'
 import { HelmetProvider } from 'react-helmet-async'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { useArticle } from '../../hooks'
 import { PAGE_SIZE } from '../../const'
 import './index.scss'
@@ -29,6 +29,7 @@ export const ArticleList = () => {
 					<meta name='description' content='文章列表' />
 				</Helmet>
 			</HelmetProvider>
+			<Link to='/auth'>权限管理</Link>
 			<List
 				style={{ minHeight: '500px' }}
 				loading={isLoading}
@@ -55,8 +56,12 @@ export const ArticleList = () => {
 									</NavLink>
 								</Tooltip>
 							)}
-							title={<NavLink to={`/articles/${item._id}`}>{item.title}</NavLink>}
-							description={<NavLink className='content-wrapper' to={`/articles/${item._id}`}>{item.content}</NavLink>}
+							title={<NavLink to={`/articles/${item._id}`} dangerouslySetInnerHTML={{
+								__html: item.title ?? ''
+							}} />}
+							description={<NavLink className='content-wrapper' to={`/articles/${item._id}`} dangerouslySetInnerHTML={{
+								__html: item.content ?? ''
+							}} />}
 						/>
 					</List.Item>
 				)}

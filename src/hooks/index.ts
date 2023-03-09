@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 自定义Hook
  */
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
@@ -63,7 +63,6 @@ export const useStoreFormVals = <T>(form: FormInstance, formVals: T, pathname: s
  * @param searchParams 搜索文案
  */
 export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE, searchParams?: string) => {
-	console.log('查询')
 	const fetchArticles = async () => {
 		try {
 			const params: {
@@ -91,10 +90,30 @@ export const useArticle = (pageNum: number = 1, pageSize: number = PAGE_SIZE, se
 	}
 
 	return useQuery(['articles', pageNum, searchParams], fetchArticles, {
-		refetchOnWindowFocus: false
+		refetchOnWindowFocus: false,
+		select: (data) => {
+			if (!searchParams) return data
+			const newData = data?.dataList.map(article => (
+				{
+					...article,
+					title: article.title?.replace(new RegExp(searchParams, 'ig'), str => `<strong>${str}</strong>`),
+					content: article.content?.replace(new RegExp(searchParams, 'ig'), str => `<strong>${str}</strong>`)
+				}
+			))
+			return {
+				dataList: newData,
+				total: data?.total
+			}
+		}
 	})
 }
 
+/**
+ * 评论列表查询
+ * @param id 文章Id
+ * @param pageNum 页码
+ * @param pageSize 一页几条
+ */
 export const useComments = (id: string, pageNum: number = 1, pageSize: number = PAGE_SIZE) => {
 	const fetchComments = async () => {
 		try {
@@ -116,25 +135,3 @@ export const useComments = (id: string, pageNum: number = 1, pageSize: number = 
 
 	return useQuery(['comments', id, pageNum], () => fetchComments())
 }
-
-// const useSearch = () => {
-// 	const request = useHttp()
-//
-// 	/**
-// 	 * 第一个参数是执行操作的异步函数，在返回的mutate中触发
-// 	 * 第二个参数是执行成功或者失败的一些配置函数，可用于一些处理缓存的操作，例如乐观更新
-// 	 */
-// 	return useMutation(
-// 		(data) =>
-// 			request(`todos`, {
-// 				data,
-// 				method: 'POST',
-// 			}),
-// 		{
-// 			onSuccess(){}
-// 			onError(){}
-// 			onSettled(){}
-// 			...
-// 		}
-// 	)
-// }

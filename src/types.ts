@@ -2,7 +2,7 @@
  * @Author: lizhigang
  * @Date: 2023-02-17 15:49:59
  * @Company: orientsec.com.cn
- * @Description: 文件描述
+ * @Description: Ts类型声明
  */
 
 export interface RequestError extends Error {
@@ -38,6 +38,7 @@ export interface UserInfo {
 	updateAt: string;
 	token?: string;
 	_id: string;
+	auth: AuthInfo;
 }
 
 export interface showUserInfo {
@@ -89,4 +90,10 @@ export interface ArticleComment {
 	user: showUserInfo;
 	createAt: string,
 	updateAt: string,
+}
+
+export interface AuthInfo {
+	_id: string;
+	auth: number;
+	name: string;
 }

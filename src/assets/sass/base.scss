@@ -3,6 +3,7 @@
 $polar-green: #237804;
 $geek-blue: #2f54eb;
 $golden-purple: #722ed1;
+$dust-red: #f5222d;
 
 #root, .App {
   height: 100%;
@@ -66,5 +67,13 @@ $golden-purple: #722ed1;
 
   &:hover {
     background-color: #597ef7 !important;
+  }
+}
+
+.dust-red {
+  background-color: $dust-red;
+
+  &:hover {
+    background-color: #ff4d4f !important;
   }
 }

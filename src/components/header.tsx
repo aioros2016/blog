@@ -5,21 +5,27 @@
  * @Description: 页头通用组件
  */
 import { Avatar, Button, Dropdown, Input, Popconfirm } from 'antd'
-import { Article, PagingParams, RequestSuccess, UserInfo } from '../types'
+import { UserInfo } from '../types'
 import { selectUserInfoState, unAuthenticatedAction } from '../page/unAuthenticated/unAuthenticated.slice'
 import { tokenKey } from '../const'
 import { useDispatch, useSelector } from 'react-redux'
-import { NavLink, useNavigate } from 'react-router-dom'
-import React, { useState } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 import { authenticatedAction } from '../page/authenticated/authenticated.slice'
 import { SearchOutlined } from '@ant-design/icons'
+import { useDebounce } from '../hooks'
 
 export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
+	const location = useLocation()
 	const storeUserInfo = useSelector(selectUserInfoState)
 	const { username, avatar } = userInfo || {}
 	const [searchVal, setSearchVal] = useState('')
+	const [searchFocus, setSearchFocus] = useState(false)
+
+	const debounceVal = useDebounce(searchVal, 500)
+	dispatch(authenticatedAction.setSearchParams(debounceVal))
 
 	const items = [{
 		key: '1',
@@ -47,20 +53,32 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 		navigate('/', { replace: true })
 	}
 
+	useEffect(() => {
+
+	}, [location.pathname])
+
 	return (
 		<header className='bolg-header'>
-			<div className='left-area'>
-				<div className='logo'>GGyy</div>
+			<NavLink className='left-area' to='/articles'>
+				<div className='logo'>发帖吧</div>
 				<div className='sub-title'>Mini</div>
-			</div>
-			<div className='search-wrapper'>
-				<Input placeholder='输入内容以搜索' onChange={e => {
-					const event: any = e
-					setSearchVal(event.target.value)
-				}} size='large' bordered={false} allowClear />
-				<SearchOutlined className={`search-icon ${searchVal ? 'search-activate' : ''}`}
-												onClick={() => dispatch(authenticatedAction.setSearchParams(searchVal))} />
-			</div>
+			</NavLink>
+			{location.pathname === '/articles' && (
+				<div className='search-wrapper'>
+					<SearchOutlined className={`search-icon ${searchFocus ? 'search-activate' : ''}`} />
+					<Input
+						placeholder='输入内容以搜索'
+						onChange={e => {
+							const event: any = e
+							setSearchVal(event.target.value)
+						}}
+						onFocus={() => setSearchFocus(true)}
+						onBlur={() => setSearchFocus(false)}
+						size='large'
+						bordered={false}
+						allowClear />
+				</div>
+			)}
 			<div className='user-status-bar'>
 				<Dropdown menu={{ items }} placement='bottomRight' arrow>
 					<Button type='link'>

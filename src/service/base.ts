@@ -2,12 +2,12 @@
  * @Author: lizhigang
  * @Date: 2023-02-17 15:09:46
  * @Company: orientsec.com.cn
- * @Description: 文件描述
+ * @Description: 通讯层模块
  */
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { RequestError, RequestMethods } from '../types'
+import { RequestMethods } from '../types'
 import { tokenKey } from '../const'
-import { message, notification } from 'antd'
+import { message } from 'antd'
 
 const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.cn/vod/' : 'http://localhost:3000/'
 
@@ -71,7 +71,6 @@ export const request = <T, R>({
 }
 
 export const requestError = (e: unknown, msg?: string) => {
-	console.log(e)
 	if (msg) return message.error(msg)
 	const { data } = e as AxiosResponse
 	if (Array.isArray(data.error)) {

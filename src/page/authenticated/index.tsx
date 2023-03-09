@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 已登录组件
  */
-import { Route, Routes, BrowserRouter as Router, Navigate, useLocation } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation, NavLink } from 'react-router-dom'
 import { ArticleList } from '../articleList'
 import { UserDetail } from '../userDetail'
 import { ArticleDetail } from '../articleDetail'
@@ -12,16 +12,18 @@ import { BlogHeader } from '../../components/header'
 import { useSelector } from 'react-redux'
 import { selectUserInfoState } from '../unAuthenticated/unAuthenticated.slice'
 import { Button, Tooltip, Badge } from 'antd'
-import { EditOutlined, FormOutlined } from '@ant-design/icons'
+import { EditOutlined, FormOutlined, DoubleLeftOutlined, TeamOutlined } from '@ant-design/icons'
 import './index.scss'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import EditArticle from '../../components/writeArticle'
 import { ResetPassword } from '../resetPassword'
 import { StoreArticle, UserInfo } from '../../types'
 import { selectDraftState } from './authenticated.slice'
 import WriteComment from '../../components/writeComment'
 import { useParams } from 'react-router'
-import { DoubleLeftOutlined } from '@ant-design/icons'
+import { Authority } from '../authority'
+import { Admin } from '../admin'
+import { Users } from '../users'
 
 export const Authenticated = () => {
 	const location = useLocation()
@@ -64,7 +66,11 @@ export const Authenticated = () => {
 				<Route path='/articles/:id' element={<ArticleDetail />} />
 				<Route path='/userdetail/:userId' element={<UserDetail />} />
 				<Route path='/resetpassword' element={<ResetPassword />} />
-				<Route path='/' element={<Navigate to='/articles ' />} />
+				<Route path='/admin' element={<Admin />}>
+					<Route index path='users' element={<Users />} />
+					<Route path='auth' element={<Authority />} />
+				</Route>
+				<Route path='/' element={<Navigate to='/articles' />} />
 			</Routes>
 			<EditArticle ref={drawerRef} />
 			<WriteComment ref={commentRef} />
@@ -98,6 +104,14 @@ export const Authenticated = () => {
 						</Tooltip>
 					</div>
 				)}
+				<div className='float-button-wrpper'>
+					<Tooltip title='管理'>
+						<NavLink to='/admin'>
+							<Button className='float-button dust-red' type='primary' shape='circle' block
+											icon={<TeamOutlined className='float-button-icon' />} />
+						</NavLink>
+					</Tooltip>
+				</div>
 			</div>
 			{/*</Router>*/}
 		</>
