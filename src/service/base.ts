@@ -9,7 +9,7 @@ import { RequestMethods } from '../types'
 import { tokenKey } from '../const'
 import { message } from 'antd'
 
-const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.cn/vod/' : 'http://localhost:3000/'
+const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.cn/vod/' : 'http://localhost:3002/'
 
 axios.defaults.baseURL = baseURL
 

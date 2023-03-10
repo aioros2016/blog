@@ -33,9 +33,8 @@ const EditArticle = (props: any, ref: any) => {
 	 * @param position 标题或内容
 	 */
 	const setStorage = (text: string, position: 'title' | 'content') => {
-		const storage: string | null = localStorage.getItem('ARTICLE_INPUT')
-		if (!storage) return
-		const draftData: StoreArticle = JSON.parse(storage)
+		let storage: string | null = localStorage.getItem('ARTICLE_INPUT') || '{}'
+		const draftData: StoreArticle = JSON.parse(storage!)
 		draftData[userInfo?._id!] = {
 			title: position === 'title' ? text : draft.title,
 			content: position === 'content' ? text : draft.content

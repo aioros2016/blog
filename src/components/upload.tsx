@@ -13,12 +13,11 @@ import { RequestSuccess } from '../types'
 import { request, requestError } from '../service/base'
 
 export const onRequest = async (imgList: any) => {
-	console.log(imgList)
 	const formData = new FormData()
-	formData.append('avatar', imgList)
+	formData.append('img', imgList)
 	try {
 		const { result } = await request<FormData, RequestSuccess<{ url: string; size: number; type: string }>>({
-			url: 'user/avatar',
+			url: 'https://static.lizhigang.cn/img/upload/tie',
 			method: 'POST',
 			data: formData
 		})

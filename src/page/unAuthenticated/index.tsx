@@ -39,8 +39,8 @@ export const UnAuthenticated = () => {
 		<>
 			<HelmetProvider>
 				<Helmet>
-					<title>{isLogin ? '登录' : '注册'}</title>
-					<meta name='description' content={`用户${isLogin ? '登录' : '注册'}`} />
+					<title>发贴吧</title>
+					<meta name='description' content='发贴吧' />
 				</Helmet>
 			</HelmetProvider>
 			<Login hide={!isLogin} children={

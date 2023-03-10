@@ -20,7 +20,6 @@ import { ResetPassword } from '../resetPassword'
 import { StoreArticle, UserInfo } from '../../types'
 import { selectDraftState } from './authenticated.slice'
 import WriteComment from '../../components/writeComment'
-import { useParams } from 'react-router'
 import { Authority } from '../authority'
 import { Admin } from '../admin'
 import { Users } from '../users'
@@ -32,7 +31,6 @@ export const Authenticated = () => {
 	const drawerRef = useRef<Record<string, any>>(null)
 	const commentRef = useRef<Record<string, any>>(null)
 	const [hasDraft, setHasDraft] = useState(false)
-	const params = useParams()
 
 	/**
 	 * 查看本地是否有文章草稿
@@ -104,14 +102,18 @@ export const Authenticated = () => {
 						</Tooltip>
 					</div>
 				)}
-				<div className='float-button-wrpper'>
-					<Tooltip title='管理'>
-						<NavLink to='/admin'>
-							<Button className='float-button dust-red' type='primary' shape='circle' block
-											icon={<TeamOutlined className='float-button-icon' />} />
-						</NavLink>
-					</Tooltip>
-				</div>
+				{
+					userInfo?.auth.auth! >= 99 && (
+						<div className='float-button-wrpper'>
+							<NavLink to='/admin'>
+								<Tooltip title='用户与权限管理'>
+									<Button className='float-button dust-red' type='primary' shape='circle' block
+													icon={<TeamOutlined className='float-button-icon' />} />
+								</Tooltip>
+							</NavLink>
+						</div>
+					)
+				}
 			</div>
 			{/*</Router>*/}
 		</>

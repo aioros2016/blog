@@ -11,7 +11,7 @@ import { tokenKey } from '../const'
 import { useDispatch, useSelector } from 'react-redux'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-import { authenticatedAction } from '../page/authenticated/authenticated.slice'
+import { authenticatedAction, selectSearchParams } from '../page/authenticated/authenticated.slice'
 import { SearchOutlined } from '@ant-design/icons'
 import { useDebounce } from '../hooks'
 
@@ -20,6 +20,7 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 	const navigate = useNavigate()
 	const location = useLocation()
 	const storeUserInfo = useSelector(selectUserInfoState)
+	const storeSearchParams = useSelector(selectSearchParams)
 	const { username, avatar } = userInfo || {}
 	const [searchVal, setSearchVal] = useState('')
 	const [searchFocus, setSearchFocus] = useState(false)
@@ -53,10 +54,6 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 		navigate('/', { replace: true })
 	}
 
-	useEffect(() => {
-
-	}, [location.pathname])
-
 	return (
 		<header className='bolg-header'>
 			<NavLink className='left-area' to='/articles'>
@@ -68,9 +65,10 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 					<SearchOutlined className={`search-icon ${searchFocus ? 'search-activate' : ''}`} />
 					<Input
 						placeholder='输入内容以搜索'
+						value={storeSearchParams}
 						onChange={e => {
 							const event: any = e
-							setSearchVal(event.target.value)
+							setSearchVal(event.target.value.trim())
 						}}
 						onFocus={() => setSearchFocus(true)}
 						onBlur={() => setSearchFocus(false)}

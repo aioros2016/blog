@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet'
 import React, { useState } from 'react'
 import { Avatar, List, Tooltip } from 'antd'
 import { HelmetProvider } from 'react-helmet-async'
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useArticle } from '../../hooks'
 import { PAGE_SIZE } from '../../const'
 import './index.scss'
@@ -29,7 +29,6 @@ export const ArticleList = () => {
 					<meta name='description' content='文章列表' />
 				</Helmet>
 			</HelmetProvider>
-			<Link to='/auth'>权限管理</Link>
 			<List
 				style={{ minHeight: '500px' }}
 				loading={isLoading}
