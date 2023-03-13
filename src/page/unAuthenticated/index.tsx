@@ -4,14 +4,12 @@
  * @Company: orientsec.com.cn
  * @Description: 未登录组件
  */
-import React, { useEffect } from 'react'
-import { Button, Form, Col, Row } from 'antd'
+import React from 'react'
+import { Button, Form } from 'antd'
 import { Login } from '../../components/login'
 import { Register } from '../../components/register'
 import { formBaseProps } from '../../const'
 import './index.scss'
-import { useDispatch, useSelector } from 'react-redux'
-import { selectIsLoginState, unAuthenticatedAction } from './unAuthenticated.slice'
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import { useUrlQueryParams } from '../../utils'
 

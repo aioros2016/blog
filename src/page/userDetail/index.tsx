@@ -27,10 +27,16 @@ export const UserDetail = () => {
 	const [open, setOpen] = useState(false)
 	const isMe = params.userId === storeUserInfo?._id
 
+	/**
+	 * 显示编辑框
+	 */
 	const showDrawer = () => {
 		setOpen(true)
 	}
 
+	/**
+	 * 隐藏编辑框
+	 */
 	const onClose = () => {
 		setOpen(false)
 	}
@@ -96,7 +102,7 @@ export const UserDetail = () => {
 					</div>
 				)}
 			</div>
-			<Drawer title='编辑个人资料' placement='right' width={500} onClose={onClose} open={open}>
+			<Drawer title='编辑个人资料' placement='right' width='50%' onClose={onClose} open={open}>
 				<UserEdit userInfo={userInfo} drawerOpen={open} onSuccess={onClose} />
 			</Drawer>
 		</div>

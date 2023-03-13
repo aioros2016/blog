@@ -106,7 +106,7 @@ export const Authenticated = () => {
 					userInfo?.auth.auth! >= 99 && (
 						<div className='float-button-wrpper'>
 							<NavLink to='/admin'>
-								<Tooltip title='用户与权限管理'>
+								<Tooltip title='用户与权限管理' placement='topRight'>
 									<Button className='float-button dust-red' type='primary' shape='circle' block
 													icon={<TeamOutlined className='float-button-icon' />} />
 								</Tooltip>

@@ -26,6 +26,9 @@ export const ArticleDetail = () => {
 	const [detail, setDetail] = useState<Article | null>(null)
 	const [page, setPage] = useState(1)
 
+	/**
+	 * 文章详情查询
+	 */
 	const fetchArticle = useCallback(async () => {
 		try {
 			const { result } = await request<{}, RequestSuccess<Article>>({

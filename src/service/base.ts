@@ -11,7 +11,12 @@ import { message } from 'antd'
 
 const baseURL = process.env.NODE_ENV === 'production' ? 'https://api.lizhigang.cn/vod/' : 'http://localhost:3002/'
 
-axios.defaults.baseURL = baseURL
+const instance = axios.create({
+	baseURL,
+	timeout: 4000,
+	headers: { 'X-Custom-Header': 'foobar' },
+	withCredentials: true
+})
 
 const codeMessage: {
 	[key: number]: string
@@ -33,26 +38,36 @@ const codeMessage: {
 	504: '网关超时。'
 }
 
-axios.interceptors.request.use(function(config) {
+instance.interceptors.request.use(function(config) {
 	if (localStorage.getItem(tokenKey)) {
 		config.headers.Authorization = `Bearer ${localStorage.getItem(tokenKey)}`
 	}
 	return config
-}, function(error) {
+}, function(error: AxiosError) {
 	return Promise.reject(error)
 })
 
-// axios.interceptors.response.use(function(response) {
-// 	return response
-// }, function(error: AxiosError) {
-// 	const { status } = error.response as AxiosResponse
-// 	if (Object.keys(codeMessage).includes(status.toString())) {
-// 		notification.error({
-// 			message: codeMessage[status!]
-// 		})
-// 	}
-// 	return Promise.reject(error)
-// })
+instance.interceptors.response.use(function(response) {
+	const { code, message } = response.data
+	if (code === 0) {
+		return response
+	} else {
+		message.error(message)
+		return Promise.reject(new Error(message))
+	}
+}, function(error: AxiosError) {
+	console.log(error)
+	if (error.code === 'ERR_NETWORK') {
+		return Promise.reject('网络异常，请稍后重试')
+	}
+	if (error.response) {
+		const { status, data } = error.response as AxiosResponse
+		if (Object.keys(codeMessage).includes(status.toString()) && !Array.isArray(data.error) && !data.error) {
+			message.error(codeMessage[status!])
+		}
+		return Promise.reject(data)
+	}
+})
 
 export const request = <T, R>({
 																url,
@@ -60,21 +75,22 @@ export const request = <T, R>({
 																params,
 																data
 															}: { url: string; method?: RequestMethods; params?: T; data?: T }): Promise<R> => {
-	return axios({
+	return instance({
 		url,
 		method,
 		params,
 		data
 	})
 		.then(res => res.data)
-		.catch((e: AxiosError) => Promise.reject(e.response))
+		.catch((e: AxiosError) => Promise.reject(e))
 }
 
 export const requestError = (e: unknown, msg?: string) => {
 	if (msg) return message.error(msg)
-	const { data } = e as AxiosResponse
-	if (Array.isArray(data.error)) {
-		return message.error(data?.error[0].msg || '其他错误，请稍候重试')
+	const { error } = e as any
+	if (Array.isArray(error)) {
+		return message.error(error[0].msg || '其他错误，请稍候重试')
 	}
-	message.error(data?.error || '其他错误，请稍候重试')
+	if (typeof e === 'string')
+		message.error(e)
 }

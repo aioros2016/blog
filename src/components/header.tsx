@@ -54,6 +54,10 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 		navigate('/', { replace: true })
 	}
 
+	useEffect(() => {
+		setSearchVal(storeSearchParams)
+	}, [storeSearchParams])
+
 	return (
 		<header className='bolg-header'>
 			<NavLink className='left-area' to='/articles'>
@@ -65,7 +69,7 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 					<SearchOutlined className={`search-icon ${searchFocus ? 'search-activate' : ''}`} />
 					<Input
 						placeholder='输入内容以搜索'
-						value={storeSearchParams}
+						value={searchVal}
 						onChange={e => {
 							const event: any = e
 							setSearchVal(event.target.value.trim())

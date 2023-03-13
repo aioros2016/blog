@@ -43,8 +43,8 @@ export const Register = ({ hide = false, children }: { hide?: boolean; children:
 			})
 			form.resetFields()
 			setParam({ type: 'login' })
-		} catch (e) {
-			requestError(e)
+		} catch (error) {
+			requestError(error)
 		}
 	}
 

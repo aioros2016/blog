@@ -12,6 +12,10 @@ import { useState } from 'react'
 export const Authority = () => {
 	const [loading, setLoading] = useState(false)
 
+	/**
+	 * 新增权限
+	 * @param values
+	 */
 	const onFinish = async (values: any) => {
 		try {
 			setLoading(true)
@@ -27,8 +31,8 @@ export const Authority = () => {
 				}
 			})
 			message.success('添加权限成功')
-		} catch (e) {
-			requestError(e)
+		} catch (error) {
+			requestError(error)
 		} finally {
 			setLoading(false)
 		}
@@ -56,10 +60,6 @@ export const Authority = () => {
 					label='权限权重'
 					name='authWeight'
 					initialValue={0}
-					// rules={[
-					// 	{ min: 0, message: '权限权重最小为0' },
-					// 	{ max: 100, message: '权限权重最大为100' }
-					// ]}
 				>
 					<InputNumber min={0} max={100} />
 				</Form.Item>

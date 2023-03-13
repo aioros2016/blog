@@ -16,7 +16,6 @@ import { RequestSuccess, UserInfo } from '../types'
 import { resetUserInfo } from '../utils'
 
 export const Login = ({ hide = false, children }: { hide?: boolean; children?: ReactNode }) => {
-	// const navigate = useNavigate()
 	const dispatch = useDispatch()
 	const submitData = useSelector(selectLoginDataState)
 	const [form] = Form.useForm()
@@ -37,11 +36,9 @@ export const Login = ({ hide = false, children }: { hide?: boolean; children?: R
 					password: values!.password.trim()
 				}
 			})
-			console.log(result)
 			resetUserInfo(dispatch, result!)
-		} catch (e) {
-			console.log(e)
-			requestError(e)
+		} catch (error) {
+			requestError(error)
 		} finally {
 			setLoading(false)
 		}

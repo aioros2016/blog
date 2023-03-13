@@ -16,7 +16,6 @@ import { RequestSuccess, UserInfo } from '../../types'
 import { UnAuthenticated } from '../unAuthenticated'
 import { Authenticated } from '../authenticated'
 import { userToken } from '../../const'
-import { AxiosResponse } from 'axios'
 import { userInfoService } from '../../service/user'
 import { LoadingSpin } from '../../components/loading'
 
@@ -31,11 +30,8 @@ export const Home = () => {
 		try {
 			const { result } = await userInfoService<RequestSuccess<UserInfo>>(`user/info`)
 			dispatch(unAuthenticatedAction.userInfo(result))
-		} catch (e) {
-			const error = e as AxiosResponse
-			if (![401, 402].includes(error.status)) {
-				requestError(error.data)
-			}
+		} catch (error) {
+			requestError(error)
 		} finally {
 			setLoading(false)
 		}
