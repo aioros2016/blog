@@ -29,7 +29,7 @@ const Tip = () => {
 	)
 }
 
-export const UnAuthenticated = () => {
+export default () => {
 	const [params, setParam] = useUrlQueryParams(['type'])
 	const isLogin = !params.type || params.type === 'login'
 

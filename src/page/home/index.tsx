@@ -13,11 +13,12 @@ import {
 import React, { useCallback, useEffect, useState } from 'react'
 import { requestError } from '../../service/base'
 import { RequestSuccess, UserInfo } from '../../types'
-import { UnAuthenticated } from '../unAuthenticated'
-import { Authenticated } from '../authenticated'
 import { userToken } from '../../const'
 import { userInfoService } from '../../service/user'
 import { LoadingSpin } from '../../components/loading'
+
+const UnAuthenticated = React.lazy(() => import('../unAuthenticated'))
+const Authenticated = React.lazy(() => import('../authenticated'))
 
 export const Home = () => {
 	const dispatch = useDispatch()
@@ -46,9 +47,9 @@ export const Home = () => {
 	return (
 		<div className='container'>
 			<Router>
-				{
-					loading ? <LoadingSpin /> : !userInfo ? <UnAuthenticated /> : <Authenticated />
-				}
+				<React.Suspense fallback={<LoadingSpin />}>
+					{loading ? <LoadingSpin /> : !userInfo ? <UnAuthenticated /> : <Authenticated />}
+				</React.Suspense>
 			</Router>
 		</div>
 	)

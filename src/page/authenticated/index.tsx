@@ -24,7 +24,7 @@ import { Authority } from '../authority'
 import { Admin } from '../admin'
 import { Users } from '../users'
 
-export const Authenticated = () => {
+export default () => {
 	const location = useLocation()
 	const userInfo = useSelector(selectUserInfoState)
 	const draft = useSelector(selectDraftState)
