@@ -17,11 +17,11 @@
 
 ## Api文档
 
-[点此折跃](https://www.apifox.cn/apidoc/shared-9bce2364-95cd-4ce4-9c36-ef4e4e26de90)
+<a href="https://www.apifox.cn/apidoc/shared-9bce2364-95cd-4ce4-9c36-ef4e4e26de90" target="_blank">点此折跃</a>
 
 ## 线上预览
 
-[点此折跃](https://tie.lizhigang.cn/)
+<a href="https://tie.lizhigang.cn/" target="_blank">点此折跃</a>
 
 ## 技术栈
 
