@@ -23,6 +23,7 @@ import WriteComment from '../../components/writeComment'
 import { Authority } from '../authority'
 import { Admin } from '../admin'
 import { Users } from '../users'
+import { MyCollect } from '../myCollect'
 
 export default () => {
 	const location = useLocation()
@@ -64,6 +65,7 @@ export default () => {
 				<Route path='/articles/:id' element={<ArticleDetail />} />
 				<Route path='/userdetail/:userId' element={<UserDetail />} />
 				<Route path='/resetpassword' element={<ResetPassword />} />
+				<Route path='/mycollect' element={<MyCollect />} />
 				<Route path='/admin' element={<Admin />}>
 					<Route index path='users' element={<Users />} />
 					<Route path='auth' element={<Authority />} />

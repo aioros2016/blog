@@ -71,6 +71,8 @@ export interface Article {
 	commentCount: number;
 	likeCount: number;
 	disLikeCount: number;
+	collectCount?: number;
+	hasCollected?: boolean;
 	createAt: string,
 	updateAt: string,
 	_id: string,

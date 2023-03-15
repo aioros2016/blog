@@ -42,6 +42,13 @@ export const BlogHeader = ({ userInfo }: { userInfo: UserInfo | null }) => {
 				<Button type='link'>修改密码</Button>
 			</NavLink>
 		)
+	}, {
+		key: '3',
+		label: (
+			<NavLink to={`/mycollect`}>
+				<Button type='link'>我的收藏</Button>
+			</NavLink>
+		)
 	}]
 
 	/**

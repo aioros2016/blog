@@ -4,7 +4,7 @@
  * @Company: orientsec.com.cn
  * @Description: 文章详情
  */
-import { Avatar, Button, List, Tooltip } from 'antd'
+import { Avatar, Button, List, message, Tooltip } from 'antd'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { request, requestError } from '../../service/base'
@@ -19,12 +19,15 @@ import { useComments } from '../../hooks'
 import { UserOutlined } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
 import { articleDetailAction } from './articleDetail.slice'
+import { Collect } from '../../components/collect'
 
 export const ArticleDetail = () => {
 	const dispatch = useDispatch()
 	const params = useParams()
 	const [detail, setDetail] = useState<Article | null>(null)
 	const [page, setPage] = useState(1)
+	const [currentCollectCount, setCurrentCollectCount] = useState(0)
+	const [loading, setLoading] = useState(false)
 
 	/**
 	 * 文章详情查询
@@ -35,10 +38,28 @@ export const ArticleDetail = () => {
 				url: `article/detail/${params.id}`
 			})
 			setDetail(result!)
+			setCurrentCollectCount(result?.collectCount!)
 		} catch (error) {
 			requestError(error)
 		}
 	}, [params.id])
+
+	const toggleCollect = async () => {
+		if (loading) return
+		setLoading(true)
+		try {
+			const { msg } = await request<{}, RequestSuccess<null, string>>({
+				url: `article/collect/${params.id}`,
+				method: 'POST'
+			})
+			msg?.match(/取消/g) ? setCurrentCollectCount(currentCollectCount - 1) : setCurrentCollectCount(currentCollectCount + 1)
+			message.success(msg)
+		} catch (error) {
+			requestError(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
 	const { isLoading, data } = useComments(params.id!, page)
 
@@ -126,6 +147,11 @@ export const ArticleDetail = () => {
 			<div style={{ marginTop: '20px', textAlign: 'right' }}>
 				<Button type='primary' size='large'
 								onClick={() => dispatch(articleDetailAction.setCommentOpen(true))}>评论回复</Button>
+			</div>
+			<div className='sidebar'>
+				<Collect collectCount={currentCollectCount}
+								 hasCollected={detail?.hasCollected}
+								 onToggle={toggleCollect} />
 			</div>
 		</div>
 	)

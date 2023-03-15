@@ -3,7 +3,10 @@
 $polar-green: #237804;
 $geek-blue: #2f54eb;
 $golden-purple: #722ed1;
+$lavender: #efdbff;
 $dust-red: #f5222d;
+$golden: #ffc53d;
+$gary: #f0f0f0;
 
 #root, .App {
   height: 100%;
@@ -23,6 +26,15 @@ $dust-red: #f5222d;
 .form-style {
   margin: 0 auto;
   @include form-width;
+}
+
+.page-title {
+  padding: 12px 24px;
+  background-color: #EEE;
+
+  h1 {
+    font-size: 24px;
+  }
 }
 
 .show {
