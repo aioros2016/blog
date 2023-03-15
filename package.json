@@ -77,8 +77,8 @@
     "start": "cross-env NODE_ENV=development craco start",
     "build": "cross-env NODE_ENV=production craco build",
     "test": "craco test",
-    "pm2-start": "pm2 start --name blog",
-    "pm2-restart": "pm2 restart --name blog"
+    "pm2-start": "pm2 start blog",
+    "pm2-restart": "pm2 restart blog"
   },
   "eslintConfig": {
     "extends": [
