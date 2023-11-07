@@ -26,7 +26,6 @@ export const Admin = () => {
 	]
 
 	const onClick: MenuProps['onClick'] = (e) => {
-		console.log('click ', e)
 		setCurrent(e.key)
 		navigate(`/admin/${e.key}`, { replace: true })
 	}

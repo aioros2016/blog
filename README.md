@@ -39,20 +39,18 @@
 
 ## 安装依赖
 
-目录中, 运行以下脚本:
-
-### `yarn install`
+`yarn install`
 
 ## 调试项目
 
-目录中, 运行以下脚本:
-
-### `yarn start`
+`yarn start`
 
 ## 构建
 
-目录中, 运行以下脚本:
+`yarn build`
 
-### `yarn build`
+## 线上部署
+
+提交代码后，至[阿里云效](https://flow.aliyun.com/my?page=1)执行自动化部署流程
 
 

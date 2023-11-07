@@ -65,7 +65,7 @@ export const Users = () => {
 			dataIndex: 'email'
 		},
 		{
-			title: '手机',
+			title: '手机号',
 			width: 80,
 			dataIndex: 'mobile'
 		},
